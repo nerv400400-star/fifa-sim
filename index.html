@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>REPAIR MASTER - COMPLETE</title>
+    <title>REPAIR MASTER - V4.5 AUTO HUNT</title>
     <style>
-        /* ========================================= */
-        /* [1. 기본 설정 및 색상 변수] */
-        /* ========================================= */
+        /* [1. 전체 테마 및 폰트] */
         :root {
             --bg-body: #050505;
             --bg-panel: #161616;
@@ -16,7 +14,7 @@
             --accent-red: #d32f2f;
             --text-white: #fff;
             
-            /* 등급별 색상 */
+            /* 등급 색상 */
             --col-SSS: #e040fb; /* 보라 */
             --col-SS: #ff6d00;  /* 주황 */
             --col-S: #ff1744;   /* 빨강 */
@@ -38,232 +36,109 @@
             overflow: hidden; 
         }
 
-        /* ========================================= */
         /* [2. 상단 헤더] */
-        /* ========================================= */
         .header {
-            height: 80px; 
-            background: #000; 
-            border-bottom: 4px solid var(--accent-red);
-            display: flex; 
-            align-items: center; 
-            padding: 0 40px; 
-            justify-content: space-between;
-            flex-shrink: 0; 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.8); 
-            z-index: 100;
+            height: 70px; background: #000; border-bottom: 4px solid var(--accent-red);
+            display: flex; align-items: center; padding: 0 30px; justify-content: space-between;
+            flex-shrink: 0; box-shadow: 0 5px 20px rgba(0,0,0,0.8); z-index: 100;
         }
-        .header-title {
-            font-family: 'Impact', sans-serif; 
-            font-size: 2.5rem; 
-            color: white; 
-            letter-spacing: 2px; 
-            text-transform: uppercase; 
-            text-shadow: 3px 3px 0 #d32f2f;
-        }
-        .header-badge {
-            background: #333; 
-            padding: 5px 12px; 
-            border-radius: 4px; 
-            font-weight: bold; 
-            font-size: 0.9rem; 
-            border: 1px solid #555;
-        }
+        .header-title { font-family: 'Impact', sans-serif; font-size: 2.2rem; letter-spacing: 1px; color: white; text-shadow: 3px 3px 0 #d32f2f; }
+        .header-badge { background: #333; padding: 5px 12px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; border: 1px solid #555; }
 
-        /* ========================================= */
-        /* [3. 메인 레이아웃 (PC 3단)] */
-        /* ========================================= */
+        /* [3. 레이아웃] */
         .main-container {
-            flex: 1; 
-            display: flex; 
-            padding: 30px; 
-            gap: 25px;
-            justify-content: center; 
-            overflow-y: auto;
+            flex: 1; display: flex; padding: 25px; gap: 20px;
+            justify-content: center; overflow-y: auto;
             background: radial-gradient(circle at center, #222 0%, #000 100%);
         }
 
         .panel {
-            background: var(--bg-panel); 
-            border: 2px solid var(--border-panel);
-            border-radius: 12px; 
-            padding: 20px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 15px;
+            background: var(--bg-panel); border: 2px solid var(--border-panel);
+            border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
-        .panel-header {
-            font-size: 1.1rem; 
-            font-weight: bold; 
-            color: #ccc;
-            border-left: 5px solid var(--accent-red); 
-            padding-left: 15px; 
-            margin-bottom: 5px;
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-        }
+        .panel-header { font-size: 1rem; font-weight: bold; color: #ccc; border-left: 5px solid var(--accent-red); padding-left: 12px; }
 
         /* [좌측 패널] */
-        .left-col { width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
-        
-        .asset-box {
-            background: #000; border: 2px solid #333; border-radius: 8px; padding: 15px;
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
-        }
-        .asset-val { font-size: 1.5rem; font-weight: 900; color: white; }
-        .asset-label { font-size: 0.9rem; color: #888; font-weight: bold; }
-
+        .left-col { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
+        .asset-box { background: #000; border: 2px solid #333; border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .asset-val { font-size: 1.4rem; font-weight: 900; color: white; }
+        .asset-label { font-size: 0.8rem; color: #888; font-weight: bold; }
         .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .shop-btn {
-            background: #222; border: 2px solid #444; color: #fff; padding: 15px 10px;
-            display: flex; flex-direction: column; align-items: center; gap: 5px;
-            cursor: pointer; border-radius: 6px; transition: 0.1s;
-        }
-        .shop-btn:hover { background: #333; border-color: var(--accent-yellow); color: var(--accent-yellow); }
-        .shop-btn:active { transform: scale(0.96); }
-        .shop-amt { font-size: 1.2rem; font-weight: 900; }
-        .shop-price { font-size: 0.8rem; color: #888; }
-
-        .input-dark {
-            width: 100%; background: #000; border: 2px solid #444; color: white;
-            padding: 12px; font-size: 1rem; text-align: center; font-weight: bold; border-radius: 6px;
-        }
-        .btn-act {
-            width: 100%; background: #444; color: white; border: none; padding: 12px;
-            font-weight: bold; cursor: pointer; border-radius: 6px; margin-top: 5px;
-        }
-        .btn-act:hover { background: #666; }
+        .shop-btn { background: #222; border: 2px solid #444; color: #fff; padding: 12px 5px; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; border-radius: 6px; }
+        .shop-btn:hover { border-color: var(--accent-yellow); }
+        .input-dark { width: 100%; background: #000; border: 2px solid #444; color: white; padding: 10px; text-align: center; border-radius: 6px; font-weight: bold; }
+        .btn-act { width: 100%; background: #444; color: white; border: none; padding: 10px; font-weight: bold; cursor: pointer; border-radius: 6px; }
 
         /* [중앙 패널] */
-        .center-col { flex: 1; max-width: 900px; min-width: 750px; display: flex; flex-direction: column; gap: 20px; }
-        
-        .hint-dashboard {
-            display: flex; align-items: center; justify-content: space-between;
-            background: #000; border: 2px solid #444; border-radius: 10px; padding: 15px 25px;
-        }
-        .hint-label { font-size: 1.2rem; font-weight: bold; color: #40c4ff; display: flex; align-items: center; gap: 10px; }
-        
-        .gauge-track {
-            flex: 1; height: 20px; background: #222; border-radius: 10px; margin: 0 20px;
-            display: flex; overflow: hidden; border: 1px solid #444;
-        }
+        .center-col { flex: 1; max-width: 850px; min-width: 650px; display: flex; flex-direction: column; gap: 15px; }
+        .hint-dashboard { display: flex; align-items: center; justify-content: space-between; background: #000; border: 2px solid #444; border-radius: 10px; padding: 12px 20px; }
+        .gauge-track { flex: 1; height: 16px; background: #222; border-radius: 10px; margin: 0 15px; display: flex; overflow: hidden; border: 1px solid #444; }
         .gauge-segment { flex: 1; border-right: 2px solid #000; background: #333; transition: 0.3s; }
-        .gauge-segment:last-child { border-right: none; }
-        .gauge-segment.active { background: #40c4ff; box-shadow: 0 0 15px #40c4ff; }
-        .hint-status-text { font-size: 0.9rem; color: #888; font-weight: bold; width: 100px; text-align: right; }
+        .gauge-segment.active { background: #40c4ff; box-shadow: 0 0 10px #40c4ff; }
 
-        .game-frame {
-            flex: 1; display: flex; gap: 20px;
-            background: #1a1a1a; border: 2px solid #444; border-radius: 12px; padding: 25px;
-        }
+        .game-frame { flex: 1; display: flex; gap: 15px; background: #1a1a1a; border: 2px solid #444; border-radius: 12px; padding: 20px; }
         .grid-wrapper { flex: 1; }
-        .grid-container {
-            display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px;
-        }
-        
-        /* 슬롯 디자인 */
-        .slot {
-            aspect-ratio: 1/1;
-            background: #252525; border: 2px solid #3c3c3c; border-radius: 8px;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            cursor: pointer; position: relative; transition: 0.1s;
-            font-family: 'Impact', sans-serif; font-size: 2rem; color: #555; letter-spacing: 1px;
-        }
-        .slot:hover { background: #333; border-color: #777; color: #888; }
-        .slot:active { transform: scale(0.95); }
+        .grid-container { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
 
-        .slot.hinted {
-            border: 3px solid #40c4ff; color: #40c4ff;
-            background: rgba(64, 196, 255, 0.1);
-            animation: pulseBlue 1s infinite alternate;
+        /* ★ 슬롯 고정 디자인 ★ */
+        .slot {
+            aspect-ratio: 1/1; background: #252525; border: 2px solid #3c3c3c; border-radius: 6px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            cursor: pointer; position: relative;
+            font-family: 'Impact', sans-serif; font-size: 1.8rem; color: #555; letter-spacing: 1px;
         }
-        .slot.opened { cursor: default; border: none; color: white; font-family: 'Pretendard', sans-serif; font-weight: 900; }
+        .slot:active { transform: scale(0.95); }
+        .slot.hinted { border-color: #40c4ff; color: #40c4ff; background: rgba(64, 196, 255, 0.1); animation: pulseBlue 1s infinite alternate; }
+        .slot.opened { cursor: default !important; border: 2px solid transparent !important; color: white !important; font-family: 'Pretendard', sans-serif; font-weight: 900; box-shadow: none; }
         
-        .hint-tag {
-            position: absolute; bottom: 5px; width: 100%; text-align: center;
-            font-size: 0.7rem; font-family: 'Pretendard', sans-serif; letter-spacing: -0.5px;
-        }
+        /* 등급별 색상 (화면 커짐 방지: 폰트 사이즈 통일) */
+        .bg-SSS { background: var(--col-SSS) !important; border: 2px solid white !important; box-shadow: 0 0 20px var(--col-SSS) !important; font-size: 1.6rem !important; }
+        .bg-SS  { background: var(--col-SS) !important; font-size: 1.6rem !important; }
+        .bg-S   { background: var(--col-S) !important; font-size: 1.6rem !important; }
+        .bg-A   { background: var(--col-A) !important; font-size: 1.6rem !important; }
+        .bg-B   { background: var(--col-B) !important; color: #000 !important; font-size: 1.6rem !important; }
+        .bg-C   { background: var(--col-C) !important; color: #aaa !important; font-size: 1.6rem !important; }
+
+        .hint-tag { position: absolute; bottom: 2px; width: 100%; text-align: center; font-size: 0.6rem; font-family: 'Pretendard', sans-serif; font-weight: bold; }
         .text-green { color: #00e676; text-shadow: 0 0 3px black; }
         .text-blue { color: #40c4ff; text-shadow: 0 0 3px black; }
         @keyframes pulseBlue { from { box-shadow: 0 0 5px #40c4ff; } to { box-shadow: 0 0 15px #40c4ff; } }
 
-        /* 등급별 스타일 (화면 커짐 방지 적용) */
-        .bg-SSS { 
-            background: var(--col-SSS); font-size: 2.2rem; 
-            border: 3px solid white !important; 
-            box-shadow: 0 0 25px var(--col-SSS); 
-            z-index: 10; 
-            /* transform: scale(1.05);  <-- 삭제됨 (화면 커짐 방지) */
-        }
-        .bg-SS  { background: var(--col-SS); font-size: 1.8rem; }
-        .bg-S   { background: var(--col-S); font-size: 1.8rem; }
-        .bg-A   { background: var(--col-A); font-size: 1.8rem; }
-        .bg-B   { background: var(--col-B); color: #000; font-size: 1.8rem; }
-        .bg-C   { background: var(--col-C); color: #aaa; font-size: 1.6rem; }
-
-        /* 우측 컨트롤 */
-        .side-controls { width: 220px; display: flex; flex-direction: column; gap: 15px; }
-        .remain-box { background: #000; border: 1px solid #444; padding: 15px; border-radius: 8px; }
-        .remain-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; border-bottom: 1px solid #222; padding-bottom: 4px; }
-        .tag { padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; min-width: 40px; text-align: center; color: white; }
+        /* 사이드 컨트롤 */
+        .side-controls { width: 180px; display: flex; flex-direction: column; gap: 12px; }
+        .remain-box { background: #000; border: 1px solid #444; padding: 10px; border-radius: 8px; }
+        .remain-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; border-bottom: 1px solid #222; }
+        .tag { padding: 1px 6px; border-radius: 3px; font-size: 0.7rem; min-width: 35px; text-align: center; color: white; }
         .tag-SSS { background: var(--col-SSS); } .tag-SS { background: var(--col-SS); }
         .tag-S { background: var(--col-S); } .tag-A { background: var(--col-A); }
         .tag-B { background: var(--col-B); color:black; } .tag-C { background: var(--col-C); }
 
         .btn-ai {
-            width: 100%; background: #333; color: #888; font-weight: 900; font-size: 1.2rem;
-            padding: 20px 0; border: 2px solid #555; border-radius: 8px; cursor: pointer;
-            text-transform: uppercase; transition: 0.2s;
+            width: 100%; background: #333; color: #888; font-weight: 900; font-size: 1.1rem;
+            padding: 20px 0; border: 2px solid #555; border-radius: 8px; cursor: pointer; transition: 0.2s;
         }
-        .btn-ai.running {
-            background: var(--accent-yellow); color: black; border-color: var(--accent-yellow);
-            box-shadow: 0 0 15px rgba(255, 202, 40, 0.5); animation: pulseBtn 1.5s infinite;
-        }
+        .btn-ai.running { background: var(--accent-yellow); color: black; border-color: var(--accent-yellow); box-shadow: 0 0 15px rgba(255, 202, 40, 0.5); animation: pulseBtn 1.5s infinite; }
         @keyframes pulseBtn { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
-
-        .btn-reset {
-            width: 100%; background: #333; color: white; padding: 15px; font-weight: bold;
-            border: 1px solid #555; border-radius: 8px; cursor: pointer; margin-top: auto;
-        }
-        .btn-reset:hover { background: #444; }
+        .btn-reset { width: 100%; background: #333; color: white; padding: 12px; font-weight: bold; border: 1px solid #555; border-radius: 8px; cursor: pointer; margin-top: auto; }
 
         /* [우측 패널] */
-        .right-col { width: 250px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
-        .history-item {
-            background: #121212; padding: 12px; border-radius: 6px; border: 1px solid #333;
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
-        }
-        .hist-val { font-size: 1.2rem; font-weight: bold; color: white; }
-        .log-area {
-            background: #111; padding: 10px 20px; font-family: monospace; font-size: 0.9rem; color: #00e676;
-            border-top: 2px solid #333; white-space: nowrap; overflow: hidden;
-        }
+        .right-col { width: 230px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
+        .history-item { background: #121212; padding: 10px; border-radius: 6px; border: 1px solid #333; display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .log-area { background: #111; padding: 10px; font-family: monospace; font-size: 0.8rem; color: #00e676; border-top: 2px solid #333; white-space: nowrap; overflow: hidden; }
 
-        /* ========================================= */
-        /* [4. 모바일 반응형] */
-        /* ========================================= */
+        /* [모바일] */
         @media (max-width: 1100px) {
             body { height: auto; overflow-y: auto; }
-            .header { padding: 0 20px; }
-            .header-title { font-size: 1.8rem; }
-            .main-container { flex-direction: column; padding: 15px; gap: 15px; }
-            
-            .center-col { order: 1; width: 100%; max-width: none; min-width: 0; }
-            .left-col { order: 2; width: 100%; }
-            .right-col { order: 3; width: 100%; }
-
-            .game-frame { flex-direction: column-reverse; padding: 15px; gap: 15px; }
-            .grid-wrapper { width: 100%; }
+            .main-container { flex-direction: column; padding: 15px; }
+            .center-col { order: 1; width: 100%; min-width: 0; }
+            .left-col, .right-col { order: 2; width: 100%; }
+            .game-frame { flex-direction: column-reverse; }
             .side-controls { width: 100%; flex-direction: row; flex-wrap: wrap; }
             .remain-box { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
-            .btn-reset { width: auto; flex: 1; margin-top: 0; }
-            .side-controls > div:nth-child(2) { flex: 1; min-width: 150px; }
-            
             .shop-grid { grid-template-columns: repeat(4, 1fr); }
             .grid-container { gap: 4px; }
-            .slot { font-size: 1.5rem; }
-            .bg-SSS { font-size: 2rem; }
+            .slot { font-size: 1.4rem; }
         }
     </style>
 </head>
@@ -271,21 +146,15 @@
 
     <div class="header">
         <div class="header-title">REPAIR MASTER</div>
-        <div class="header-badge">Complete v4.1</div>
+        <div class="header-badge">AUTO HUNT V4.5</div>
     </div>
 
     <div class="main-container">
         <div class="left-col">
             <div class="panel">
                 <div class="panel-header">내 자산</div>
-                <div class="asset-box">
-                    <span class="asset-label">FV 포인트</span>
-                    <span class="asset-val" style="color:var(--col-S);" id="fv-disp">0</span>
-                </div>
-                <div class="asset-box" style="border-color:var(--accent-yellow);">
-                    <span class="asset-label" style="color:var(--accent-yellow);">이용권</span>
-                    <span class="asset-val" style="color:var(--accent-yellow);" id="ticket-disp">0</span>
-                </div>
+                <div class="asset-box"><span class="asset-label">FV</span><span class="asset-val" id="fv-disp" style="color:var(--col-S);">0</span></div>
+                <div class="asset-box" style="border-color:var(--accent-yellow);"><span class="asset-label">이용권</span><span class="asset-val" id="ticket-disp" style="color:var(--accent-yellow);">0</span></div>
                 <div>
                     <input type="number" id="fv-input" class="input-dark" placeholder="충전액">
                     <button class="btn-act" style="margin-top:5px;" onclick="chargeFV()">충전</button>
@@ -294,50 +163,40 @@
             <div class="panel">
                 <div class="panel-header">티켓 상점</div>
                 <div class="shop-grid">
-                    <div class="shop-btn" onclick="buyTicket(1)">
-                        <span class="shop-amt">1장</span><span class="shop-price">30 FV</span>
-                    </div>
-                    <div class="shop-btn" onclick="buyTicket(10)">
-                        <span class="shop-amt">10장</span><span class="shop-price">300 FV</span>
-                    </div>
-                    <div class="shop-btn" onclick="buyTicket(100)">
-                        <span class="shop-amt">100장</span><span class="shop-price">3,000 FV</span>
-                    </div>
-                    <div class="shop-btn" style="border-color:var(--col-A);" onclick="buyTicket(1000)">
-                        <span class="shop-amt" style="color:var(--col-A);">1,000장</span><span class="shop-price">30,000 FV</span>
-                    </div>
+                    <div class="shop-btn" onclick="buyTicket(1)"><span>1장</span><span style="font-size:0.7rem; color:#888;">30FV</span></div>
+                    <div class="shop-btn" onclick="buyTicket(10)"><span>10장</span><span style="font-size:0.7rem; color:#888;">300FV</span></div>
+                    <div class="shop-btn" onclick="buyTicket(100)"><span>100장</span><span style="font-size:0.7rem; color:#888;">3,000FV</span></div>
+                    <div class="shop-btn" onclick="buyTicket(1000)" style="border-color:var(--col-A);"><span style="color:var(--col-A);">1,000장</span><span style="font-size:0.7rem; color:#888;">30,000</span></div>
                 </div>
             </div>
         </div>
 
         <div class="center-col">
             <div class="hint-dashboard">
-                <div class="hint-label">⚡ HINT GAUGE</div>
+                <div style="color:#40c4ff; font-weight:bold;">⚡ HINT GAUGE</div>
                 <div class="gauge-track">
                     <div class="gauge-segment" id="seg-1"></div>
                     <div class="gauge-segment" id="seg-2"></div>
                     <div class="gauge-segment" id="seg-3"></div>
                 </div>
-                <div class="hint-status-text" id="hint-status">0 / 3</div>
+                <div id="hint-status" style="font-weight:bold; color:#888; min-width:40px;">0 / 3</div>
             </div>
 
             <div class="game-frame">
                 <div class="side-controls">
                     <div class="remain-box">
-                        <div class="remain-row"><span class="tag tag-SSS">SSS</span> <span id="cnt-SSS">1</span></div>
-                        <div class="remain-row"><span class="tag tag-SS">SS</span> <span id="cnt-SS">2</span></div>
-                        <div class="remain-row"><span class="tag tag-S">S</span> <span id="cnt-S">3</span></div>
-                        <div class="remain-row"><span class="tag tag-A">A</span> <span id="cnt-A">10</span></div>
-                        <div class="remain-row"><span class="tag tag-B">B</span> <span id="cnt-B">12</span></div>
-                        <div class="remain-row"><span class="tag tag-C">C</span> <span id="cnt-C">12</span></div>
+                        <div class="remain-row"><span class="tag tag-SSS">SSS</span> <span id="cnt-SSS">0</span></div>
+                        <div class="remain-row"><span class="tag tag-SS">SS</span> <span id="cnt-SS">0</span></div>
+                        <div class="remain-row"><span class="tag tag-S">S</span> <span id="cnt-S">0</span></div>
+                        <div class="remain-row"><span class="tag tag-A">A</span> <span id="cnt-A">0</span></div>
+                        <div class="remain-row"><span class="tag tag-B">B</span> <span id="cnt-B">0</span></div>
+                        <div class="remain-row"><span class="tag tag-C">C</span> <span id="cnt-C">0</span></div>
                     </div>
                     <div>
                         <button class="btn-ai" id="btn-ai" onclick="toggleAI()">AI 자동 정비<br><span style="font-size:0.8rem;">[OFF]</span></button>
-                        <div style="text-align:center; font-size:0.8rem; color:#666; margin-top:5px;">1회: 티켓 30장</div>
                     </div>
                     <button class="btn-reset" onclick="resetBoard()">판 초기화</button>
                 </div>
-
                 <div class="grid-wrapper">
                     <div class="grid-container" id="grid"></div>
                 </div>
@@ -349,18 +208,18 @@
             <div class="panel" style="height:100%;">
                 <div class="panel-header" style="display:flex; justify-content:space-between;">
                     <span>획득 기록</span>
-                    <span style="font-size:0.7rem; cursor:pointer; text-decoration:underline;" onclick="resetTotal()">초기화</span>
+                    <span style="font-size:0.7rem; text-decoration:underline; cursor:pointer;" onclick="resetTotal()">초기화</span>
                 </div>
                 <div style="flex:1;">
-                    <div class="history-item" style="border-color:var(--col-SSS);"><span class="tag tag-SSS">SSS</span><span class="hist-val" id="total-SSS" style="color:var(--col-SSS);">0</span></div>
-                    <div class="history-item" style="border-color:var(--col-SS);"><span class="tag tag-SS">SS</span><span class="hist-val" id="total-SS" style="color:var(--col-SS);">0</span></div>
-                    <div class="history-item" style="border-color:var(--col-S);"><span class="tag tag-S">S</span><span class="hist-val" id="total-S" style="color:var(--col-S);">0</span></div>
-                    <div class="history-item" style="border-color:var(--col-A);"><span class="tag tag-A">A</span><span class="hist-val" id="total-A">0</span></div>
-                    <div class="history-item" style="border-color:var(--col-B);"><span class="tag tag-B">B</span><span class="hist-val" id="total-B">0</span></div>
-                    <div class="history-item" style="border-color:var(--col-C);"><span class="tag tag-C">C</span><span class="hist-val" id="total-C">0</span></div>
+                    <div class="history-item"><span class="tag tag-SSS">SSS</span><span id="total-SSS" style="font-weight:bold; color:var(--col-SSS);">0</span></div>
+                    <div class="history-item"><span class="tag tag-SS">SS</span><span id="total-SS" style="font-weight:bold; color:var(--col-SS);">0</span></div>
+                    <div class="history-item"><span class="tag tag-S">S</span><span id="total-S" style="font-weight:bold; color:var(--col-S);">0</span></div>
+                    <div class="history-item"><span class="tag tag-A">A</span><span id="total-A" style="font-weight:bold; color:var(--col-A);">0</span></div>
+                    <div class="history-item"><span class="tag tag-B">B</span><span id="total-B" style="font-weight:bold; color:var(--col-B);">0</span></div>
+                    <div class="history-item"><span class="tag tag-C">C</span><span id="total-C" style="font-weight:bold; color:#aaa;">0</span></div>
                 </div>
                 <div style="background:#000; padding:10px; border-radius:6px; border:1px solid #333;">
-                    <div style="font-size:0.8rem; color:#888;">총 오픈</div>
+                    <div style="font-size:0.8rem; color:#888;">총 시도</div>
                     <div style="font-size:1.4rem; font-weight:bold; text-align:right;" id="total-open-count">0</div>
                 </div>
             </div>
@@ -368,96 +227,77 @@
     </div>
 
 <script>
-    // === Variables ===
-    let myFV = 0, myTickets = 0;
-    let board = [], hintCount = 0;
-    let isAutoRunning = false;
-    let totalStats = { SSS:0, SS:0, S:0, A:0, B:0, C:0 }, totalOpens = 0;
+    let myFV = 0, myTickets = 0, board = [], hintCount = 0;
+    let isAutoRunning = false, totalStats = { SSS:0, SS:0, S:0, A:0, B:0, C:0 }, totalOpens = 0;
 
-    // === Init Board (순환 C 방지) ===
+    // [1] 보드 생성
     function initBoard() {
-        let rewards = [
-            ...Array(1).fill('SSS'), ...Array(2).fill('SS'), ...Array(3).fill('S'),
-            ...Array(10).fill('A'), ...Array(12).fill('B'), ...Array(12).fill('C')
-        ];
-        
+        let rewards = [...Array(1).fill('SSS'), ...Array(2).fill('SS'), ...Array(3).fill('S'), ...Array(10).fill('A'), ...Array(12).fill('B'), ...Array(12).fill('C')];
         let attempts = 0;
         while(true) {
             attempts++;
-            // Shuffle
             for (let i = rewards.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [rewards[i], rewards[j]] = [rewards[j], rewards[i]];
             }
-            // Check C neighbors (Circular)
             let valid = true;
             for(let i=0; i<40; i++) {
                 if(rewards[i] === 'C') {
-                    let prev = (i - 1 + 40) % 40;
-                    let next = (i + 1) % 40;
-                    if (rewards[prev] === 'C' || rewards[next] === 'C') { valid = false; break; }
+                    if (rewards[(i-1+40)%40] === 'C' || rewards[(i+1)%40] === 'C') { valid = false; break; }
                 }
             }
-            if(valid) break;
-            if(attempts > 5000) break; 
+            if(valid || attempts > 5000) break;
         }
-
         board = rewards.map(r => ({ reward: r, opened: false, hinted: false }));
         hintCount = 0;
-        updateHintGauge(); 
-        renderBoard();
-        updateRemainCounts();
-        log("[SYSTEM] 새로운 판 배치 완료.");
+        updateHintGauge(); renderBoard(); updateRemainCounts();
+        log("[SYSTEM] 보상판 재배치 완료.");
     }
 
-    // === Rendering ===
+    // [2] 렌더링
     function renderBoard() {
         const grid = document.getElementById('grid');
         grid.innerHTML = '';
         board.forEach((slot, i) => {
             const div = document.createElement('div');
-            let cls = 'slot';
-            let html = '';
-
-            if (slot.opened) {
-                cls += ` opened bg-${slot.reward}`;
-                html = slot.reward;
-            } else {
-                if (slot.hinted) {
-                    cls += ' hinted';
-                    html = `?<div class="hint-tag text-blue">A등급↑</div>`;
-                } else {
-                    html = (i + 1);
-                    // Circular Neighbor Check for Hint
-                    let prev = (i - 1 + 40) % 40;
-                    let next = (i + 1) % 40;
-                    if((board[prev].opened && board[prev].reward === 'C') || (board[next].opened && board[next].reward === 'C')) {
+            div.className = 'slot' + (slot.opened ? ' opened bg-' + slot.reward : (slot.hinted ? ' hinted' : ''));
+            
+            let html = slot.opened ? slot.reward : (i + 1);
+            if (!slot.opened) {
+                if (slot.hinted) html = `?<div class="hint-tag text-blue">A등급↑</div>`;
+                else {
+                    let prev = (i - 1 + 40) % 40, next = (i + 1) % 40;
+                    if ((board[prev].opened && board[prev].reward === 'C') || (board[next].opened && board[next].reward === 'C')) {
                         html += `<div class="hint-tag text-green">B등급↑</div>`;
                     }
                 }
                 div.onclick = () => openSlot(i);
             }
-            div.className = cls;
             div.innerHTML = html;
             grid.appendChild(div);
         });
     }
 
+    // [3] 게이지 & 수량 업데이트
     function updateHintGauge() {
-        for(let i=1; i<=3; i++) {
-            const seg = document.getElementById(`seg-${i}`);
-            if(i <= hintCount) seg.classList.add('active');
-            else seg.classList.remove('active');
-        }
+        for(let i=1; i<=3; i++) document.getElementById(`seg-${i}`).className = 'gauge-segment' + (i <= hintCount ? ' active' : '');
         document.getElementById('hint-status').innerText = hintCount === 3 ? "READY!" : `${hintCount} / 3`;
     }
+    function updateRemainCounts() {
+        const c = {SSS:0,SS:0,S:0,A:0,B:0,C:0};
+        board.forEach(s => { if(!s.opened) c[s.reward]++; });
+        for(let k in c) document.getElementById(`cnt-${k}`).innerText = c[k];
+    }
+    function updateTotalStats() {
+        for(let k in totalStats) document.getElementById(`total-${k}`).innerText = totalStats[k];
+        document.getElementById('total-open-count').innerText = totalOpens;
+    }
 
-    // === Game Logic ===
+    // [4] 핵심: 슬롯 열기
     function openSlot(i) {
         if(board[i].opened) return;
-        
         if(myTickets < 30) {
-            log("[ERROR] 이용권 부족.");
+            log("[ERROR] 티켓 부족.");
             if(isAutoRunning) toggleAI();
             return;
         }
@@ -465,157 +305,95 @@
         myTickets -= 30;
         updateDisplay();
         board[i].opened = true;
+        const reward = board[i].reward;
         
-        // 1. Hint Count Logic
+        totalStats[reward]++; totalOpens++; updateTotalStats();
+        
         hintCount++;
-        let triggerHint = false;
-        if(hintCount >= 3) {
-            hintCount = 0;
-            triggerHint = true;
-        }
+        let trigger = false;
+        if(hintCount >= 3) { hintCount = 0; trigger = true; }
         updateHintGauge();
-        
-        // 2. Stats
-        totalStats[board[i].reward]++;
-        totalOpens++;
-        updateTotalStats();
-        
-        // 3. Apply System Hint (A+)
-        if(triggerHint) {
-            const targets = board.map((s, idx) => idx).filter(idx => !board[idx].opened && ['SSS','SS','S','A'].includes(board[idx].reward));
-            if(targets.length > 0) {
-                const t = targets[Math.floor(Math.random()*targets.length)];
-                board[t].hinted = true;
-                log("[HINT] A등급 이상 위치 힌트!");
-            }
+
+        if(trigger) {
+            const t = board.map((s, idx) => idx).filter(idx => !board[idx].opened && ['SSS','SS','S','A'].includes(board[idx].reward));
+            if(t.length > 0) board[t[Math.floor(Math.random()*t.length)]].hinted = true;
         }
 
         renderBoard();
         updateRemainCounts();
 
-        // 4. SSS Handling (Reset if AI)
-        const reward = board[i].reward;
         if(reward === 'SSS') {
             log(`★ SSS 획득! ★`);
             if(isAutoRunning) {
-                // AI 모드: 0.8초 후 자동 리셋 -> 계속 진행
+                // AI는 0.8초 후 자동 리셋 및 재시작
                 setTimeout(() => {
                     initBoard();
-                    if(isAutoRunning && myTickets >= 30) setTimeout(runAILoop, 300);
+                    if(isAutoRunning) setTimeout(runAILoop, 300);
                 }, 800);
-            } else {
-                // 수동 모드: 그냥 멈춤
-                log("축하합니다! 초기화 버튼을 눌러주세요.");
             }
             return 'SSS';
-        } else {
-            log(`${i+1}번 오픈 -> [${reward}]`);
         }
+        
+        log(`${i+1}번 오픈 -> [${reward}]`);
+        
+        // AI 실행 중이라면 다음 루프 호출
+        if(isAutoRunning && reward !== 'SSS') {
+            setTimeout(runAILoop, 150);
+        }
+        
         return reward;
     }
 
-    // === AI Logic (Smart Priority) ===
+    // [5] AI 엔진
     function toggleAI() {
         if(isAutoRunning) {
             isAutoRunning = false;
-            document.getElementById('btn-ai').classList.remove('running');
-            document.getElementById('btn-ai').innerHTML = 'AI 자동 정비<br><span style="font-size:0.8rem;">[OFF]</span>';
-            log("[AI] 중지됨.");
+            document.getElementById('btn-ai').className = 'btn-ai';
+            document.getElementById('btn-ai').innerHTML = 'AI 자동 정비<br><span>[OFF]</span>';
         } else {
             isAutoRunning = true;
-            document.getElementById('btn-ai').classList.add('running');
-            document.getElementById('btn-ai').innerHTML = 'AI 작동 중...<br><span style="font-size:0.8rem;">[STOP]</span>';
-            log("[AI] 자동 정비 시작.");
+            document.getElementById('btn-ai').className = 'btn-ai running';
+            document.getElementById('btn-ai').innerHTML = 'AI 작동 중...<br><span>[STOP]</span>';
             runAILoop();
         }
     }
 
     function runAILoop() {
-        if(!isAutoRunning) return;
-        if(myTickets < 30) {
-            log("[AI] 이용권 부족.");
-            toggleAI();
-            return;
-        }
-
+        if(!isAutoRunning || myTickets < 30) return;
+        
         let target = -1;
-        
-        // Priority 1: System Hint (A+)
-        const hints = board.map((s,i)=>i).filter(i => s.hinted && !s.opened);
+        // 1. 힌트 우선
+        const hints = board.map((s,i)=>i).filter(i => board[i].hinted && !board[i].opened);
         if(hints.length > 0) target = hints[0];
-
-        // Priority 2: C-Neighbor (B+) Circular check
-        if(target === -1) {
-            const candidates = [];
-            board.forEach((s, i) => {
-                if(!s.opened) {
-                    let prev = (i - 1 + 40) % 40;
-                    let next = (i + 1) % 40;
-                    if ((board[prev].opened && board[prev].reward === 'C') || (board[next].opened && board[next].reward === 'C')) {
-                        candidates.push(i);
-                    }
-                }
-            });
-            if(candidates.length > 0) target = candidates[Math.floor(Math.random()*candidates.length)];
-        }
-
-        // Priority 3: Random
-        if(target === -1) {
-            const unopened = board.map((s,i)=>i).filter(i => !s.opened);
-            if(unopened.length === 0) {
-                // All opened but no SSS? (Rare case)
-                initBoard();
-                setTimeout(runAILoop, 300);
-                return;
-            }
-            target = unopened[Math.floor(Math.random()*unopened.length)];
-        }
-
-        const res = openSlot(target);
         
-        // If NOT SSS, keep running. If SSS, openSlot handles the reset wait.
-        if(res !== 'SSS') setTimeout(runAILoop, 150);
-    }
-
-    // === UI & Utils ===
-    function updateRemainCounts() {
-        const counts = { SSS:0, SS:0, S:0, A:0, B:0, C:0 };
-        board.forEach(s => { if(!s.opened) counts[s.reward]++; });
-        for(let k in counts) document.getElementById(`cnt-${k}`).innerText = counts[k];
-    }
-    
-    function updateTotalStats() {
-        for(let k in totalStats) document.getElementById(`total-${k}`).innerText = totalStats[k].toLocaleString();
-        document.getElementById('total-open-count').innerText = totalOpens.toLocaleString();
-    }
-
-    function resetTotal() {
-        if(confirm("기록을 초기화하시겠습니까?")) {
-            totalStats = { SSS:0, SS:0, S:0, A:0, B:0, C:0 };
-            totalOpens = 0;
-            updateTotalStats();
+        // 2. C 인접 우선
+        if(target === -1) {
+            const cands = board.map((s,i)=>i).filter(i => {
+                if(s.opened) return false;
+                let p = (i-1+40)%40, n = (i+1)%40;
+                return (board[p].opened && board[p].reward === 'C') || (board[n].opened && board[n].reward === 'C');
+            });
+            if(cands.length > 0) target = cands[Math.floor(Math.random()*cands.length)];
         }
+        
+        // 3. 랜덤
+        if(target === -1) {
+            const un = board.map((s,i)=>i).filter(i => !board[i].opened);
+            if(un.length > 0) target = un[Math.floor(Math.random()*un.length)];
+        }
+
+        if(target !== -1) openSlot(target);
     }
 
+    // [6] 유틸리티
+    function chargeFV() { let v = parseInt(document.getElementById('fv-input').value); if(v>0){ myFV += v; document.getElementById('fv-input').value=''; updateDisplay(); } }
+    function buyTicket(n) { let c = n*30; if(myFV>=c){ myFV-=c; myTickets+=n; updateDisplay(); } }
+    function updateDisplay() { document.getElementById('fv-disp').innerText = myFV.toLocaleString(); document.getElementById('ticket-disp').innerText = myTickets.toLocaleString(); }
+    function log(m) { document.getElementById('log-text').innerText = m; }
+    function resetTotal() { if(confirm("기록 초기화?")){ totalStats={SSS:0,SS:0,S:0,A:0,B:0,C:0}; totalOpens=0; updateTotalStats(); } }
     function resetBoard() { initBoard(); }
-
-    function chargeFV() {
-        const val = parseInt(document.getElementById('fv-input').value);
-        if(val > 0) { myFV += val; document.getElementById('fv-input').value = ''; updateDisplay(); }
-    }
-    function buyTicket(n) {
-        const cost = n * 30;
-        if(myFV >= cost) { myFV -= cost; myTickets += n; updateDisplay(); } 
-        else { log("[오류] FV 부족"); }
-    }
-    function updateDisplay() {
-        document.getElementById('fv-disp').innerText = myFV.toLocaleString();
-        document.getElementById('ticket-disp').innerText = myTickets.toLocaleString();
-    }
-    function log(msg) { document.getElementById('log-text').innerText = msg; }
 
     initBoard();
 </script>
-
 </body>
 </html>
