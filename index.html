@@ -3,177 +3,515 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FC 모바일 가챠 시뮬레이터</title>
+    <title>REPAIR MASTER - FC ONLINE SIM</title>
     <style>
-        :root { --primary: #0047ff; --secondary: #ff004c; --bg: #0a0a0c; --card: #1a1a1e; --text: #ffffff; }
-        body { font-family: 'Pretendard', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        .container { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 500px; }
-        .card { background: var(--card); border-radius: 15px; padding: 15px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h2 { font-size: 1.2rem; margin: 0 0 15px 0; text-align: center; color: #aaa; }
-        
-        /* FV 구역 */
-        .fv-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; margin-bottom: 12px; text-align: center; }
-        .fv-amount { font-size: 1.5rem; font-weight: 800; color: #00d1ff; }
-        .input-group { display: flex; gap: 5px; margin-bottom: 15px; }
-        input { flex: 1; padding: 12px; border-radius: 8px; border: none; background: #333; color: white; font-size: 1rem; }
-        
-        /* 버튼 공통 */
-        button { padding: 12px; cursor: pointer; border: none; border-radius: 8px; font-weight: bold; font-size: 0.9rem; transition: 0.2s; color: white; }
-        button:active { transform: scale(0.95); }
-        .btn-charge { background: #444; width: 80px; }
-        .btn-main { background: var(--primary); width: 100%; margin-bottom: 8px; }
-        .btn-ai { background: #008148; flex: 1; }
-        .btn-reset { background: #881d1d; flex: 1; }
+        /* === 전체 레이아웃 및 폰트 설정 === */
+        :root {
+            --bg-dark: #121212;
+            --accent-red: #d32f2f;
+            --text-main: #ffffff;
+            --text-sub: #b0b0b0;
+            --panel-bg: rgba(30, 30, 30, 0.95);
+        }
+        * { box-sizing: border-box; user-select: none; }
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(circle at center, #2a2a2a 0%, #000000 100%);
+        }
 
-        /* 정비마스터 그리드 (모바일 5열 최적화) */
-        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 15px 0; }
-        .slot { aspect-ratio: 1/1; border-radius: 6px; background: #2a2a2e; display: flex; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; color: #888; border: 1px solid #444; }
-        .slot.opened { cursor: default; color: white; font-weight: 900; font-size: 13px; text-shadow: 0 0 5px rgba(0,0,0,0.5); border: none; }
-        .slot.hinted { background: #ffd700 !important; color: #000 !important; animation: blink 1s infinite; font-weight: bold; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        /* === 헤더 === */
+        .header {
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--accent-red);
+            background: rgba(0,0,0,0.8);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .header-title {
+            font-family: 'Impact', sans-serif;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #fff;
+            text-shadow: 2px 2px 0px var(--accent-red);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .header-badge {
+            background: var(--accent-red);
+            font-size: 0.9rem;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-family: sans-serif;
+            letter-spacing: normal;
+        }
 
-        /* 하단 통계 */
-        .stats { background: #000; padding: 12px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.5; color: #00ff41; border: 1px solid #222; }
+        /* === 메인 컨텐츠 (중앙 정렬) === */
+        .content-body {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* 상단 정렬 */
+            gap: 30px;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        /* === 패널 스타일 === */
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+        }
+
+        /* 왼쪽: 컨트롤 패널 */
+        .control-panel {
+            width: 350px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .section-title {
+            margin: 0 0 15px 0;
+            color: #fff;
+            font-size: 1.1rem;
+            border-left: 4px solid var(--accent-red);
+            padding-left: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .fv-display {
+            background: #000;
+            border: 1px solid #555;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: right;
+            margin-bottom: 10px;
+        }
+        .fv-value { font-size: 2rem; font-weight: 800; color: #fff; }
+        .fv-unit { color: var(--accent-red); font-weight: bold; }
+
+        .input-group { display: flex; gap: 5px; }
+        input {
+            flex: 1; background: #333; border: 1px solid #555; padding: 12px; color: white; 
+            font-weight: bold; text-align: center; border-radius: 4px; font-size: 1rem;
+        }
+        button.btn-charge {
+            background: #444; color: white; border: none; padding: 0 20px; cursor: pointer; 
+            font-weight: bold; border-radius: 4px; transition: 0.2s;
+        }
+        button.btn-charge:hover { background: #666; }
+
+        button.btn-main {
+            width: 100%; padding: 15px; font-size: 1.1rem; color: white; border: none; 
+            font-weight: bold; cursor: pointer; border-radius: 6px; 
+            box-shadow: 0 4px 0 rgba(0,0,0,0.5); transition: 0.1s; position: relative; overflow: hidden;
+        }
+        button.btn-main:active { transform: translateY(3px); box-shadow: none; }
+        
+        .btn-ai { background: linear-gradient(to right, #00695c, #00897b); }
+        .btn-reset { background: linear-gradient(to right, #c62828, #d32f2f); }
+        .btn-rh { background: linear-gradient(to right, #1565c0, #1e88e5); margin-top: 5px; }
+
+        /* 오른쪽: 게임 그리드 */
+        .game-area {
+            flex: 1;
+            max-width: 800px;
+        }
+        .grid-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 15px;
+        }
+        .remain-badge {
+            background: #333; color: #fff; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #333;
+        }
+        
+        .slot {
+            aspect-ratio: 1/1;
+            background: #252525;
+            border: 1px solid #3a3a3a;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #444;
+            cursor: pointer;
+            transition: all 0.1s;
+            position: relative;
+        }
+        .slot:hover { border-color: #888; background: #303030; }
+        .slot:active { transform: scale(0.95); }
+
+        /* 힌트 애니메이션 */
+        .slot.hinted {
+            border: 2px solid #ffd700;
+            color: #ffd700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            animation: pulse 0.8s infinite alternate;
+        }
+        @keyframes pulse { from { opacity: 1; } to { opacity: 0.6; } }
+
+        /* 보상 등급별 스타일 */
+        .slot.opened { cursor: default; border: none; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .bg-SSS { background: linear-gradient(135deg, #FFD700, #FDB931); color: #000 !important; text-shadow: none; border: 2px solid #fff !important; font-size: 1.4rem; z-index: 10; transform: scale(1.05); }
+        .bg-SS  { background: linear-gradient(135deg, #FF8C00, #FF4500); color: #fff; }
+        .bg-S   { background: #FF5252; color: #fff; }
+        .bg-A   { background: #448AFF; color: #fff; }
+        .bg-B   { background: #00E676; color: #000; }
+        .bg-C   { background: #424242; color: #aaa; }
+
+        /* 로그창 */
+        .log-container {
+            margin-top: 15px;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 15px;
+            height: 120px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #00ff00;
+            line-height: 1.4;
+        }
+        .log-time { color: #888; margin-right: 5px; }
+
+        /* 스크롤바 커스텀 */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background: #111; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="card">
-        <h2>RH26 PACK SIM</h2>
-        <div class="fv-box">보유: <span id="rh-fv" class="fv-amount">0</span> FV</div>
-        <div class="input-group">
-            <input type="number" id="rh-input" placeholder="충전액">
-            <button onclick="chargeFV('rh')" class="btn-charge">충전</button>
+    <div class="header">
+        <div class="header-title">
+            REPAIR MASTER <span class="header-badge">SIMULATOR</span>
         </div>
-        <button onclick="playRH(1)" class="btn-main">1회 개봉 (30)</button>
-        <button onclick="playRH(10)" class="btn-main">10회 개봉 (300)</button>
-        <button onclick="playRH(100)" class="btn-main" style="background:#002688;">100회 초고속 개봉</button>
-        <div id="rh-stats" class="stats">No History</div>
+        <div style="color: #aaa; font-size: 0.9rem;">
+            * 확률형 아이템 시뮬레이션
+        </div>
     </div>
 
-    <div class="card">
-        <h2>MAINTENANCE MASTER</h2>
-        <div class="fv-box">보유: <span id="mm-fv" class="fv-amount" style="color:#ff004c">0</span> FV</div>
-        <div class="input-group">
-            <input type="number" id="mm-input" placeholder="충전액">
-            <button onclick="chargeFV('mm')" class="btn-charge">충전</button>
+    <div class="content-body">
+        
+        <div class="control-panel">
+            <div class="panel">
+                <div class="section-title">
+                    <span>정비 포인트 (FV)</span>
+                </div>
+                <div class="fv-display">
+                    <span class="fv-value" id="mm-fv">0</span> <span class="fv-unit">FV</span>
+                </div>
+                <div class="input-group">
+                    <input type="number" id="mm-input" placeholder="충전액">
+                    <button class="btn-charge" onclick="chargeFV()">충전</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="section-title">
+                    <span>RH26 패키지</span>
+                    <span style="font-size:0.8rem; color:#aaa;">30 FV / 1회</span>
+                </div>
+                <div class="input-group">
+                    <input type="number" id="rh-input" placeholder="RH FV">
+                    <button class="btn-charge" onclick="chargeRH()">충전</button>
+                </div>
+                <div style="margin: 10px 0; font-size:0.9rem; display:flex; justify-content:space-between;">
+                    <span style="color:#aaa;">보유: <span id="rh-fv" style="color:#448AFF; font-weight:bold;">0</span> FV</span>
+                </div>
+                <button class="btn-main btn-rh" onclick="playRH(100)">100회 고속 개봉</button>
+                <div id="rh-stats" style="margin-top:10px; font-size:0.8rem; color:#888; background:#222; padding:8px; border-radius:4px;">
+                    개봉 기록 없음
+                </div>
+            </div>
+
+            <div class="panel" style="padding-top:10px;">
+                <button class="btn-main btn-ai" onclick="autoAI()">AI 자동 전략 (START)</button>
+                <button class="btn-main btn-reset" style="margin-top:10px;" onclick="resetBoard()">보상판 초기화</button>
+            </div>
         </div>
-        <div class="grid" id="mm-grid"></div>
-        <div style="display:flex; gap:8px;">
-            <button onclick="autoAI()" id="ai-btn" class="btn-ai">AI AUTO STRATEGY</button>
-            <button onclick="resetBoard()" class="btn-reset">RESET</button>
+
+        <div class="game-area">
+            <div class="panel">
+                <div class="grid-header">
+                    <h2 style="margin:0; color:white;">정비 구역</h2>
+                    <div class="remain-badge">남은 칸: <span id="remain-count" style="color:var(--accent-red); font-weight:bold;">40</span> / 40</div>
+                </div>
+
+                <div class="grid-container" id="mm-grid">
+                    </div>
+
+                <div class="log-container" id="game-log">
+                    <div>[SYSTEM] 시뮬레이터가 준비되었습니다.</div>
+                    <div>[RULE] C등급은 가로로 연속 배치되지 않습니다.</div>
+                </div>
+            </div>
         </div>
-        <div id="mm-stats" class="stats" style="margin-top:10px;">Progress: 0/40</div>
+
     </div>
-</div>
 
 <script>
+    // === 전역 변수 ===
     let rhFV = 0, mmFV = 0;
     let rhStats = {"134+": 0, "132+": 0, "Other": 0}, rhTotal = 0;
-    let mmResults = {SSS: 0, SS: 0, S: 0, A: 0, B: 0, C: 0}, mmTotal = 0;
+    let mmResults = {SSS: 0, SS: 0, S: 0, A: 0, B: 0, C: 0};
     let mmBoard = [], hintCount = 0, lastReward = null, lastIdx = -1;
+    let isAutoRunning = false;
 
-    function chargeFV(type) {
-        const input = document.getElementById(type + '-input');
-        const val = parseInt(input.value) || 0;
-        if(type === 'rh') rhFV += val; else mmFV += val;
-        input.value = ''; updateDisplay();
+    // === FV 관리 ===
+    function chargeFV() {
+        const input = document.getElementById('mm-input');
+        const val = parseInt(input.value);
+        if(!val) return;
+        mmFV += val; input.value = ''; updateDisplay();
+        log(`[충전] 정비 포인트 ${val.toLocaleString()} FV 충전 완료.`);
+    }
+    function chargeRH() {
+        const input = document.getElementById('rh-input');
+        const val = parseInt(input.value);
+        if(!val) return;
+        rhFV += val; input.value = ''; updateDisplay();
     }
 
+    // === RH26 로직 ===
     function playRH(count) {
-        if(rhFV < count * 30) return alert("FV Lack");
+        if(rhFV < count * 30) return alert("RH FV가 부족합니다.");
         rhFV -= count * 30; rhTotal += count;
+        let gain134 = 0;
         for(let i=0; i<count; i++){
             let r = Math.random();
-            if(r < 0.00741) rhStats["134+"]++;
+            if(r < 0.00741) { rhStats["134+"]++; gain134++; }
             else if(r < 0.06677) rhStats["132+"]++;
             else rhStats["Other"]++;
         }
         updateDisplay();
+        if(gain134 > 0) log(`[RH26] 대박! 134+ 선수 ${gain134}명 획득!`);
     }
 
+    // === 정비마스터 보드 생성 (엄격한 C 좌우 금지 규칙) ===
     function initBoard() {
-        let rewards = [...Array(1).fill('SSS'), ...Array(2).fill('SS'), ...Array(3).fill('S'), ...Array(10).fill('A'), ...Array(12).fill('B'), ...Array(12).fill('C')];
+        let rewards = [
+            ...Array(1).fill('SSS'), ...Array(2).fill('SS'), ...Array(3).fill('S'),
+            ...Array(10).fill('A'), ...Array(12).fill('B'), ...Array(12).fill('C')
+        ];
+        
+        let attempts = 0;
         while(true) {
-            rewards.sort(() => Math.random() - 0.5);
+            attempts++;
+            // 1. 무작위 섞기
+            for (let i = rewards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [rewards[i], rewards[j]] = [rewards[j], rewards[i]];
+            }
+
+            // 2. 유효성 검사 (C 옆에 C 금지)
             let valid = true;
             for(let i=0; i<40; i++) {
                 if(rewards[i] === 'C') {
-                    if((i%8 > 0 && rewards[i-1] === 'C') || (i%8 < 7 && rewards[i+1] === 'C')) { valid = false; break; }
+                    // 같은 행(Row)에 있는지 확인 (8개씩 끊어서)
+                    const row = Math.floor(i / 8);
+                    
+                    // 왼쪽 검사
+                    if(i % 8 > 0 && rewards[i-1] === 'C') { valid = false; break; }
+                    // 오른쪽 검사
+                    if(i % 8 < 7 && rewards[i+1] === 'C') { valid = false; break; }
                 }
             }
+
+            // 3. 통과하면 루프 종료
             if(valid) break;
+            
+            // (안전장치) 너무 오래 걸리면 강제 종료 후 재시도 (보통 1~5회 안에 성공함)
+            if(attempts > 1000) {
+                console.warn("Valid board generation retrying...");
+                attempts = 0;
+            }
         }
+        
         mmBoard = rewards.map(r => ({reward: r, opened: false, hinted: false}));
+        hintCount = 0; lastReward = null; lastIdx = -1;
+        isAutoRunning = false;
         renderBoard();
+        updateDisplay();
+        log("[SYSTEM] 보상판이 엄격한 규칙으로 재배치되었습니다.");
     }
 
+    // === 보드 렌더링 ===
     function renderBoard() {
         const grid = document.getElementById('mm-grid');
         grid.innerHTML = '';
+        
         mmBoard.forEach((slot, i) => {
             const div = document.createElement('div');
-            div.className = 'slot' + (slot.opened ? ' opened' : '') + (slot.hinted && !slot.opened ? ' hinted' : '');
-            div.innerText = slot.opened ? slot.reward : (slot.hinted ? '[?]' : i + 1);
-            if(slot.opened) div.style.backgroundColor = getRewardColor(slot.reward);
-            div.onclick = () => openSlot(i);
+            let className = 'slot';
+            if(slot.opened) className += ' opened bg-' + slot.reward;
+            else if(slot.hinted) className += ' hinted';
+            
+            div.className = className;
+            div.innerText = slot.opened ? slot.reward : (slot.hinted ? '?' : i + 1);
+            
+            if(!slot.opened) {
+                div.onclick = () => openSlot(i);
+            }
             grid.appendChild(div);
         });
+        
+        const remain = mmBoard.filter(s => !s.opened).length;
+        document.getElementById('remain-count').innerText = remain;
     }
 
+    // === 슬롯 오픈 ===
     function openSlot(i) {
-        if(mmBoard[i].opened || mmFV < 900) return;
-        mmFV -= 900; mmTotal++; hintCount++;
+        if(mmBoard[i].opened) return;
+        if(mmFV < 900) {
+            alert("FV가 부족합니다. (1회 900 FV)");
+            isAutoRunning = false;
+            return;
+        }
+
+        mmFV -= 900;
+        hintCount++;
+        
         const reward = mmBoard[i].reward;
         mmBoard[i].opened = true;
-        mmResults[reward]++; lastReward = reward; lastIdx = i;
+        mmResults[reward]++;
+        lastReward = reward;
+        lastIdx = i;
 
+        // 3회마다 힌트 발동
         if(hintCount % 3 === 0) giveHint();
-        if(reward === "SSS") { alert("★SSS WINNER! AUTO RESET★"); resetBoard(); return; }
-        updateDisplay(); renderBoard();
+
+        // SSS 획득 시 처리
+        if(reward === 'SSS') {
+            renderBoard();
+            updateDisplay();
+            log(`[JACKPOT] ${i+1}번에서 ★SSS★ 획득!`);
+            setTimeout(() => {
+                if(confirm("★축하합니다! SSS를 획득했습니다!★\n새로운 판으로 초기화하시겠습니까?")) {
+                    initBoard();
+                } else {
+                    isAutoRunning = false;
+                }
+            }, 100);
+            return 'SSS';
+        }
+
+        log(`[OPEN] ${i+1}번 오픈 -> ${reward} 등급 획득`);
+        renderBoard();
+        updateDisplay();
         return reward;
     }
 
+    // === 힌트 로직 (A등급 이상) ===
     function giveHint() {
-        const targets = mmBoard.map((s, i) => i).filter(i => !mmBoard[i].opened && ['SSS','SS','S','A'].includes(mmBoard[i].reward));
-        if(targets.length > 0) mmBoard[targets[Math.floor(Math.random()*targets.length)]].hinted = true;
+        const targets = mmBoard.map((s, i) => i)
+            .filter(i => !mmBoard[i].opened && ['SSS','SS','S','A'].includes(mmBoard[i].reward));
+        
+        if(targets.length > 0) {
+            const idx = targets[Math.floor(Math.random()*targets.length)];
+            mmBoard[idx].hinted = true;
+            renderBoard(); // 힌트 표시 갱신
+            log(`[HINT] ${idx+1}번 위치에서 좋은 기운이 느껴집니다!`);
+        }
+    }
+
+    // === AI 자동 전략 ===
+    function autoAI() {
+        if(isAutoRunning) return;
+        isAutoRunning = true;
+        log("[AI] 자동 전략 모드 가동.");
+        runAILoop();
+    }
+
+    function runAILoop() {
+        if(!isAutoRunning) return;
+        if(mmFV < 900) {
+            log("[AI] FV 부족으로 중단.");
+            isAutoRunning = false;
+            return;
+        }
+
+        let targetIdx = -1;
+        
+        // 1순위: 힌트 지역
+        const hints = mmBoard.map((s,i)=>i).filter(i => mmBoard[i].hinted && !mmBoard[i].opened);
+        if(hints.length > 0) targetIdx = hints[0];
+        
+        // 2순위: C등급 옆 공략 (좌우)
+        else if(lastReward === 'C') {
+            const row = Math.floor(lastIdx/8);
+            const candidates = [lastIdx-1, lastIdx+1].filter(i => 
+                i >= 0 && i < 40 && Math.floor(i/8) === row && !mmBoard[i].opened
+            );
+            if(candidates.length > 0) targetIdx = candidates[Math.floor(Math.random()*candidates.length)];
+        }
+        
+        // 3순위: 랜덤
+        if(targetIdx === -1) {
+            const unopened = mmBoard.map((s,i)=>i).filter(i => !mmBoard[i].opened);
+            if(unopened.length === 0) {
+                if(confirm("판을 모두 열었습니다. 초기화할까요?")) initBoard();
+                else isAutoRunning = false;
+                return;
+            }
+            targetIdx = unopened[Math.floor(Math.random()*unopened.length)];
+        }
+
+        const res = openSlot(targetIdx);
+        if(res !== 'SSS') setTimeout(runAILoop, 200); // 0.2초 딜레이
+        else isAutoRunning = false; // SSS 나오면 멈춤
     }
 
     function resetBoard() {
-        mmTotal = 0; hintCount = 0; lastReward = null;
-        initBoard(); updateDisplay();
-    }
-
-    function autoAI() {
-        if(mmFV < 900) return;
-        let targetIdx = -1;
-        const hints = mmBoard.map((s,i)=>i).filter(i => mmBoard[i].hinted && !mmBoard[i].opened);
-        if(hints.length > 0) targetIdx = hints[0];
-        else if(lastReward === 'C') {
-            const row = Math.floor(lastIdx/8), candidates = [lastIdx-1, lastIdx+1].filter(i => i >= 0 && i < 40 && Math.floor(i/8) === row && !mmBoard[i].opened);
-            if(candidates.length > 0) targetIdx = candidates[Math.floor(Math.random()*candidates.length)];
-        }
-        if(targetIdx === -1) {
-            const unopened = mmBoard.map((s,i)=>i).filter(i => !mmBoard[i].opened);
-            targetIdx = unopened[Math.floor(Math.random()*unopened.length)];
-        }
-        const res = openSlot(targetIdx);
-        if(res !== "SSS" && mmFV >= 900) setTimeout(autoAI, 200);
-    }
-
-    function getRewardColor(r) {
-        return {SSS: "#facc15", SS: "#fb923c", S: "#f87171", A: "#60a5fa", B: "#4b5563", C: "#334155"}[r];
+        if(confirm("판을 초기화하시겠습니까? (현재 판은 사라집니다)")) initBoard();
     }
 
     function updateDisplay() {
-        document.getElementById('rh-fv').innerText = rhFV.toLocaleString();
         document.getElementById('mm-fv').innerText = mmFV.toLocaleString();
-        document.getElementById('rh-stats').innerText = `TOTAL: ${rhTotal}\n134+: ${rhStats["134+"]}\n132+: ${rhStats["132+"]}`;
-        document.getElementById('mm-stats').innerText = `STEP: ${mmTotal}/40\nSSS:${mmResults.SSS} SS:${mmResults.SS} S:${mmResults.S}\nA:${mmResults.A} B:${mmResults.B} C:${mmResults.C}`;
+        document.getElementById('rh-fv').innerText = rhFV.toLocaleString();
+        document.getElementById('rh-stats').innerText = `134+ 획득: ${rhStats["134+"]}회 / 전체: ${rhTotal}회`;
     }
 
-    initBoard(); updateDisplay();
+    function log(msg) {
+        const div = document.getElementById('game-log');
+        const time = new Date().toLocaleTimeString('ko-KR', {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'});
+        div.innerHTML += `<div><span class="log-time">[${time}]</span>${msg}</div>`;
+        div.scrollTop = div.scrollHeight;
+    }
+
+    // 실행
+    initBoard();
 </script>
+
 </body>
 </html>
