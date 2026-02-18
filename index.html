@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FC 모바일 가챠 시뮬레이터</title>
+    <style>
+        :root { --primary: #0047ff; --secondary: #ff004c; --bg: #0a0a0c; --card: #1a1a1e; --text: #ffffff; }
+        body { font-family: 'Pretendard', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        .container { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 500px; }
+        .card { background: var(--card); border-radius: 15px; padding: 15px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h2 { font-size: 1.2rem; margin: 0 0 15px 0; text-align: center; color: #aaa; }
+        
+        /* FV 구역 */
+        .fv-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; margin-bottom: 12px; text-align: center; }
+        .fv-amount { font-size: 1.5rem; font-weight: 800; color: #00d1ff; }
+        .input-group { display: flex; gap: 5px; margin-bottom: 15px; }
+        input { flex: 1; padding: 12px; border-radius: 8px; border: none; background: #333; color: white; font-size: 1rem; }
+        
+        /* 버튼 공통 */
+        button { padding: 12px; cursor: pointer; border: none; border-radius: 8px; font-weight: bold; font-size: 0.9rem; transition: 0.2s; color: white; }
+        button:active { transform: scale(0.95); }
+        .btn-charge { background: #444; width: 80px; }
+        .btn-main { background: var(--primary); width: 100%; margin-bottom: 8px; }
+        .btn-ai { background: #008148; flex: 1; }
+        .btn-reset { background: #881d1d; flex: 1; }
+
+        /* 정비마스터 그리드 (모바일 5열 최적화) */
+        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 15px 0; }
+        .slot { aspect-ratio: 1/1; border-radius: 6px; background: #2a2a2e; display: flex; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; color: #888; border: 1px solid #444; }
+        .slot.opened { cursor: default; color: white; font-weight: 900; font-size: 13px; text-shadow: 0 0 5px rgba(0,0,0,0.5); border: none; }
+        .slot.hinted { background: #ffd700 !important; color: #000 !important; animation: blink 1s infinite; font-weight: bold; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* 하단 통계 */
+        .stats { background: #000; padding: 12px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.5; color: #00ff41; border: 1px solid #222; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h2>RH26 PACK SIM</h2>
+        <div class="fv-box">보유: <span id="rh-fv" class="fv-amount">0</span> FV</div>
+        <div class="input-group">
+            <input type="number" id="rh-input" placeholder="충전액">
+            <button onclick="chargeFV('rh')" class="btn-charge">충전</button>
+        </div>
+        <button onclick="playRH(1)" class="btn-main">1회 개봉 (30)</button>
+        <button onclick="playRH(10)" class="btn-main">10회 개봉 (300)</button>
+        <button onclick="playRH(100)" class="btn-main" style="background:#002688;">100회 초고속 개봉</button>
+        <div id="rh-stats" class="stats">No History</div>
+    </div>
+
+    <div class="card">
+        <h2>MAINTENANCE MASTER</h2>
+        <div class="fv-box">보유: <span id="mm-fv" class="fv-amount" style="color:#ff004c">0</span> FV</div>
+        <div class="input-group">
+            <input type="number" id="mm-input" placeholder="충전액">
+            <button onclick="chargeFV('mm')" class="btn-charge">충전</button>
+        </div>
+        <div class="grid" id="mm-grid"></div>
+        <div style="display:flex; gap:8px;">
+            <button onclick="autoAI()" id="ai-btn" class="btn-ai">AI AUTO STRATEGY</button>
+            <button onclick="resetBoard()" class="btn-reset">RESET</button>
+        </div>
+        <div id="mm-stats" class="stats" style="margin-top:10px;">Progress: 0/40</div>
+    </div>
+</div>
+
+<script>
+    let rhFV = 0, mmFV = 0;
+    let rhStats = {"134+": 0, "132+": 0, "Other": 0}, rhTotal = 0;
+    let mmResults = {SSS: 0, SS: 0, S: 0, A: 0, B: 0, C: 0}, mmTotal = 0;
+    let mmBoard = [], hintCount = 0, lastReward = null, lastIdx = -1;
+
+    function chargeFV(type) {
+        const input = document.getElementById(type + '-input');
+        const val = parseInt(input.value) || 0;
+        if(type === 'rh') rhFV += val; else mmFV += val;
+        input.value = ''; updateDisplay();
+    }
+
+    function playRH(count) {
+        if(rhFV < count * 30) return alert("FV Lack");
+        rhFV -= count * 30; rhTotal += count;
+        for(let i=0; i<count; i++){
+            let r = Math.random();
+            if(r < 0.00741) rhStats["134+"]++;
+            else if(r < 0.06677) rhStats["132+"]++;
+            else rhStats["Other"]++;
+        }
+        updateDisplay();
+    }
+
+    function initBoard() {
+        let rewards = [...Array(1).fill('SSS'), ...Array(2).fill('SS'), ...Array(3).fill('S'), ...Array(10).fill('A'), ...Array(12).fill('B'), ...Array(12).fill('C')];
+        while(true) {
+            rewards.sort(() => Math.random() - 0.5);
+            let valid = true;
+            for(let i=0; i<40; i++) {
+                if(rewards[i] === 'C') {
+                    if((i%8 > 0 && rewards[i-1] === 'C') || (i%8 < 7 && rewards[i+1] === 'C')) { valid = false; break; }
+                }
+            }
+            if(valid) break;
+        }
+        mmBoard = rewards.map(r => ({reward: r, opened: false, hinted: false}));
+        renderBoard();
+    }
+
+    function renderBoard() {
+        const grid = document.getElementById('mm-grid');
+        grid.innerHTML = '';
+        mmBoard.forEach((slot, i) => {
+            const div = document.createElement('div');
+            div.className = 'slot' + (slot.opened ? ' opened' : '') + (slot.hinted && !slot.opened ? ' hinted' : '');
+            div.innerText = slot.opened ? slot.reward : (slot.hinted ? '[?]' : i + 1);
+            if(slot.opened) div.style.backgroundColor = getRewardColor(slot.reward);
+            div.onclick = () => openSlot(i);
+            grid.appendChild(div);
+        });
+    }
+
+    function openSlot(i) {
+        if(mmBoard[i].opened || mmFV < 900) return;
+        mmFV -= 900; mmTotal++; hintCount++;
+        const reward = mmBoard[i].reward;
+        mmBoard[i].opened = true;
+        mmResults[reward]++; lastReward = reward; lastIdx = i;
+
+        if(hintCount % 3 === 0) giveHint();
+        if(reward === "SSS") { alert("★SSS WINNER! AUTO RESET★"); resetBoard(); return; }
+        updateDisplay(); renderBoard();
+        return reward;
+    }
+
+    function giveHint() {
+        const targets = mmBoard.map((s, i) => i).filter(i => !mmBoard[i].opened && ['SSS','SS','S','A'].includes(mmBoard[i].reward));
+        if(targets.length > 0) mmBoard[targets[Math.floor(Math.random()*targets.length)]].hinted = true;
+    }
+
+    function resetBoard() {
+        mmTotal = 0; hintCount = 0; lastReward = null;
+        initBoard(); updateDisplay();
+    }
+
+    function autoAI() {
+        if(mmFV < 900) return;
+        let targetIdx = -1;
+        const hints = mmBoard.map((s,i)=>i).filter(i => mmBoard[i].hinted && !mmBoard[i].opened);
+        if(hints.length > 0) targetIdx = hints[0];
+        else if(lastReward === 'C') {
+            const row = Math.floor(lastIdx/8), candidates = [lastIdx-1, lastIdx+1].filter(i => i >= 0 && i < 40 && Math.floor(i/8) === row && !mmBoard[i].opened);
+            if(candidates.length > 0) targetIdx = candidates[Math.floor(Math.random()*candidates.length)];
+        }
+        if(targetIdx === -1) {
+            const unopened = mmBoard.map((s,i)=>i).filter(i => !mmBoard[i].opened);
+            targetIdx = unopened[Math.floor(Math.random()*unopened.length)];
+        }
+        const res = openSlot(targetIdx);
+        if(res !== "SSS" && mmFV >= 900) setTimeout(autoAI, 200);
+    }
+
+    function getRewardColor(r) {
+        return {SSS: "#facc15", SS: "#fb923c", S: "#f87171", A: "#60a5fa", B: "#4b5563", C: "#334155"}[r];
+    }
+
+    function updateDisplay() {
+        document.getElementById('rh-fv').innerText = rhFV.toLocaleString();
+        document.getElementById('mm-fv').innerText = mmFV.toLocaleString();
+        document.getElementById('rh-stats').innerText = `TOTAL: ${rhTotal}\n134+: ${rhStats["134+"]}\n132+: ${rhStats["132+"]}`;
+        document.getElementById('mm-stats').innerText = `STEP: ${mmTotal}/40\nSSS:${mmResults.SSS} SS:${mmResults.SS} S:${mmResults.S}\nA:${mmResults.A} B:${mmResults.B} C:${mmResults.C}`;
+    }
+
+    initBoard(); updateDisplay();
+</script>
+</body>
+</html>
