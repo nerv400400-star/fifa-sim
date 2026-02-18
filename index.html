@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REPAIR MASTER - FINAL FIX</title>
+    <title>REPAIR MASTER - SEQUENCE LOGIC</title>
     <style>
         /* === 전체 테마 === */
         :root {
@@ -236,7 +236,7 @@
 
     <div class="header">
         <div class="header-title">REPAIR MASTER</div>
-        <div class="header-badge">SIMULATOR V3.0</div>
+        <div class="header-badge">SEQ LOGIC V3.1</div>
     </div>
 
     <div class="main-container">
@@ -364,8 +364,6 @@
     let board = [];
     let isAutoRunning = false;
     let hintCount = 0; 
-    
-    // Total Stats
     let totalStats = { SSS:0, SS:0, S:0, A:0, B:0, C:0 };
     let totalOpens = 0;
 
@@ -376,11 +374,10 @@
             ...Array(10).fill('A'), ...Array(12).fill('B'), ...Array(12).fill('C')
         ];
 
-        // 셔플 & 유효성 검사 (C 좌우 금지)
+        // Shuffle & Validate (Circular C-C check)
         let attempts = 0;
         while(true) {
             attempts++;
-            // Fisher-Yates Shuffle
             for (let i = rewards.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [rewards[i], rewards[j]] = [rewards[j], rewards[i]];
@@ -389,16 +386,17 @@
             let valid = true;
             for(let i=0; i<40; i++) {
                 if(rewards[i] === 'C') {
-                    if(i % 8 > 0 && rewards[i-1] === 'C') { valid = false; break; }
-                    if(i % 8 < 7 && rewards[i+1] === 'C') { valid = false; break; }
+                    // Check Previous (Circular)
+                    let prev = (i - 1 + 40) % 40;
+                    if (rewards[prev] === 'C') { valid = false; break; }
+                    
+                    // Check Next (Circular)
+                    let next = (i + 1) % 40;
+                    if (rewards[next] === 'C') { valid = false; break; }
                 }
             }
             if(valid) break;
-            // 안전장치
-            if(attempts > 3000) { 
-                console.log("Retry limit reached"); 
-                break; 
-            }
+            if(attempts > 5000) break;
         }
 
         board = rewards.map(r => ({ reward: r, opened: false, hinted: false }));
@@ -407,7 +405,7 @@
         updateHintGauge(); 
         renderBoard();
         updateRemainCounts();
-        log("[SYSTEM] 새로운 판이 배치되었습니다.");
+        log("[SYSTEM] 새로운 판이 배치되었습니다. (순번 로직)");
     }
 
     // === Visual Rendering ===
@@ -424,20 +422,20 @@
                 cls += ` opened bg-${slot.reward}`;
                 html = slot.reward;
             } else {
-                // CLOSED
+                // CLOSED STATE
                 if (slot.hinted) {
                     cls += ' hinted';
                     html = `?<div class="hint-tag text-blue">A등급↑</div>`;
                 } else {
                     html = (i + 1);
                     
-                    // C-Neighbor Hint: 좌우 양쪽 다 열리지 않았어도 표시
+                    // CIRCULAR C-Neighbor Hint Logic
                     let showGreen = false;
-                    
-                    // 왼쪽이 열렸고 C인가?
-                    if(i % 8 > 0 && board[i-1].opened && board[i-1].reward === 'C') showGreen = true;
-                    // 오른쪽이 열렸고 C인가?
-                    if(i % 8 < 7 && board[i+1].opened && board[i+1].reward === 'C') showGreen = true;
+                    let prev = (i - 1 + 40) % 40;
+                    let next = (i + 1) % 40;
+
+                    if(board[prev].opened && board[prev].reward === 'C') showGreen = true;
+                    if(board[next].opened && board[next].reward === 'C') showGreen = true;
 
                     if(showGreen) {
                         html += `<div class="hint-tag text-green">B등급↑</div>`;
@@ -457,7 +455,7 @@
             if(i <= hintCount) seg.classList.add('active');
             else seg.classList.remove('active');
         }
-        const remaining = 3 - hintCount;
+        
         let text = hintCount === 0 ? "0 / 3" : (hintCount === 3 ? "READY!" : `${hintCount} / 3`);
         document.getElementById('hint-status').innerText = text;
     }
@@ -468,7 +466,7 @@
         
         if(myTickets < 30) {
             log("[ERROR] 이용권이 부족합니다.");
-            if(isAutoRunning) toggleAI();
+            if(isAutoRunning) toggleAI(); 
             return;
         }
 
@@ -477,7 +475,7 @@
 
         board[i].opened = true;
         
-        // --- Hint Count ---
+        // Hint Logic
         hintCount++;
         let triggerHint = false;
         if(hintCount >= 3) {
@@ -491,7 +489,7 @@
         totalOpens++;
         updateTotalStats();
         
-        // Apply Hint
+        // Apply System Hint (A+)
         if(triggerHint) {
             const targets = board.map((s, idx) => idx).filter(idx => !board[idx].opened && ['SSS','SS','S','A'].includes(board[idx].reward));
             if(targets.length > 0) {
@@ -522,7 +520,7 @@
         return reward;
     }
 
-    // === AI Logic ===
+    // === AI Logic (Circular Aware) ===
     function toggleAI() {
         if(isAutoRunning) {
             isAutoRunning = false;
@@ -548,20 +546,26 @@
 
         let target = -1;
         
-        // 1. Hinted
+        // 1. System Hints
         const hints = board.map((s,i)=>i).filter(i => s.hinted && !s.opened);
         if(hints.length > 0) target = hints[0];
 
-        // 2. C Neighbor
+        // 2. Circular C-Neighbor (B+)
         if(target === -1) {
-            const cNeighbors = [];
+            const candidates = [];
             board.forEach((s, i) => {
-                if(s.opened && s.reward === 'C') {
-                    if(i%8 > 0 && !board[i-1].opened) cNeighbors.push(i-1);
-                    if(i%8 < 7 && !board[i+1].opened) cNeighbors.push(i+1);
+                // If I am closed
+                if(!s.opened) {
+                    let prev = (i - 1 + 40) % 40;
+                    let next = (i + 1) % 40;
+                    // Check if neighbor is opened C
+                    if ((board[prev].opened && board[prev].reward === 'C') || 
+                        (board[next].opened && board[next].reward === 'C')) {
+                        candidates.push(i);
+                    }
                 }
             });
-            if(cNeighbors.length > 0) target = cNeighbors[Math.floor(Math.random()*cNeighbors.length)];
+            if(candidates.length > 0) target = candidates[Math.floor(Math.random()*candidates.length)];
         }
 
         // 3. Random
