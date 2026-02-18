@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REPAIR MASTER - ORIGINAL UI</title>
+    <title>REPAIR MASTER - BOLD DESIGN</title>
     <style>
-        /* === 전체 테마 (FC 온라인 스타일) === */
+        /* === 전체 테마 === */
         :root {
-            --bg-body: #121212;
-            --bg-panel: #1f1f1f;
+            --bg-body: #050505;
+            --bg-panel: #161616;
             --border-panel: #333;
-            --accent-yellow: #fdd835; /* 버튼 등 */
+            --accent-yellow: #ffca28; 
+            --accent-red: #d32f2f;
             --text-white: #fff;
-            --text-gray: #b0b0b0;
             
-            /* 등급별 색상 (요청하신 컬러) */
-            --col-SSS: #d500f9; /* 보라 */
+            /* 등급 색상 (선명하게) */
+            --col-SSS: #e040fb; /* 보라 */
             --col-SS: #ff6d00;  /* 주황 */
-            --col-S: #d50000;   /* 빨강 */
-            --col-A: #2962ff;   /* 파랑 */
-            --col-B: #00c853;   /* 초록 */
+            --col-S: #ff1744;   /* 빨강 */
+            --col-A: #2979ff;   /* 파랑 */
+            --col-B: #00e676;   /* 초록 */
             --col-C: #616161;   /* 회색 */
         }
 
@@ -35,41 +35,29 @@
             overflow: hidden;
         }
 
-        /* === 상단 헤더 === */
+        /* === 헤더 === */
         .header {
-            height: 70px;
+            height: 80px;
             background: #000;
-            border-bottom: 3px solid #d32f2f;
+            border-bottom: 4px solid var(--accent-red);
             display: flex;
             align-items: center;
             padding: 0 40px;
             justify-content: space-between;
+            flex-shrink: 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.8);
+            z-index: 100;
         }
         .header-title {
             font-family: 'Impact', sans-serif;
-            font-size: 2rem;
+            font-size: 2.5rem;
             color: white;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             text-transform: uppercase;
+            text-shadow: 3px 3px 0 #d32f2f;
         }
-        .header-right {
-            display: flex;
-            gap: 10px;
-        }
-        .top-btn {
-            background: #333;
-            color: #fff;
-            border: 1px solid #555;
-            padding: 8px 15px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-        .top-btn.yellow {
-            background: var(--accent-yellow);
-            color: #000;
-            font-weight: bold;
-            border: none;
+        .header-badge {
+            background: #333; padding: 5px 12px; border-radius: 4px; font-weight: bold; font-size: 0.9rem; border: 1px solid #555;
         }
 
         /* === 메인 컨테이너 === */
@@ -77,210 +65,167 @@
             flex: 1;
             display: flex;
             padding: 30px;
-            gap: 30px;
+            gap: 25px;
             justify-content: center;
             overflow-y: auto;
-            background: radial-gradient(circle at 50% 50%, #2c2c2c 0%, #121212 80%);
+            background: radial-gradient(circle at center, #222 0%, #000 100%);
         }
 
-        /* === 왼쪽: 지갑 & 상점 (사이드바 대체) === */
-        .wallet-panel {
-            width: 300px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .info-box {
+        /* === 패널 공통 === */
+        .panel {
             background: var(--bg-panel);
-            border: 1px solid var(--border-panel);
+            border: 2px solid var(--border-panel);
+            border-radius: 12px;
             padding: 20px;
-            border-radius: 8px;
-        }
-        .info-title {
-            font-size: 0.9rem;
-            color: var(--text-gray);
-            border-left: 3px solid #d32f2f;
-            padding-left: 10px;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-        .asset-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #121212;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 8px;
-            border: 1px solid #333;
-        }
-        .shop-btn {
-            width: 100%;
-            background: #252525;
-            border: 1px solid #444;
-            color: #ccc;
-            padding: 10px;
-            margin-bottom: 5px;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .shop-btn:hover { background: #333; border-color: var(--accent-yellow); color: white; }
-        .shop-btn span { font-weight: bold; }
-        .fv-input {
-            width: 100%; padding: 10px; background: #121212; border: 1px solid #444; 
-            color: white; text-align: center; margin-bottom: 5px;
-        }
-
-        /* === 중앙: 게임 보드 (이미지 스타일) === */
-        .game-frame {
-            display: flex;
-            background: rgba(30, 30, 30, 0.9);
-            border: 1px solid #444;
-            border-radius: 10px;
-            padding: 30px;
-            gap: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            max-width: 900px;
-        }
-
-        /* 게임 왼쪽 컨트롤 (노란 버튼 있는 곳) */
-        .game-controls {
-            width: 240px;
             display: flex;
             flex-direction: column;
             gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+        .panel-header {
+            font-size: 1.1rem; font-weight: bold; color: #ccc;
+            border-left: 5px solid var(--accent-red); padding-left: 15px; margin-bottom: 5px;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* [좌측] 자산 & 상점 */
+        .left-col { width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
+        
+        .asset-box {
+            background: #000; border: 2px solid #333; border-radius: 8px; padding: 15px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+        }
+        .asset-val { font-size: 1.5rem; font-weight: 900; color: white; }
+        .asset-label { font-size: 0.9rem; color: #888; font-weight: bold; }
+
+        .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .shop-btn {
+            background: #222; border: 2px solid #444; color: #fff; padding: 15px 10px;
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+            cursor: pointer; border-radius: 6px; transition: 0.1s;
+        }
+        .shop-btn:hover { background: #333; border-color: var(--accent-yellow); color: var(--accent-yellow); }
+        .shop-btn:active { transform: scale(0.96); }
+        .shop-amt { font-size: 1.2rem; font-weight: 900; }
+        .shop-price { font-size: 0.8rem; color: #888; }
+
+        .input-dark {
+            width: 100%; background: #000; border: 2px solid #444; color: white;
+            padding: 12px; font-size: 1rem; text-align: center; font-weight: bold; border-radius: 6px;
+        }
+        .btn-act {
+            width: 100%; background: #444; color: white; border: none; padding: 12px;
+            font-weight: bold; cursor: pointer; border-radius: 6px; margin-top: 5px;
+        }
+        .btn-act:hover { background: #666; }
+
+        /* [중앙] 게임 보드 */
+        .center-col { flex: 1; max-width: 900px; min-width: 750px; display: flex; flex-direction: column; gap: 20px; }
+        
+        /* 힌트 게이지 (NEW FEATURE) */
+        .hint-dashboard {
+            display: flex; align-items: center; justify-content: space-between;
+            background: #000; border: 2px solid #444; border-radius: 10px; padding: 15px 25px;
+        }
+        .hint-label { font-size: 1.2rem; font-weight: bold; color: #40c4ff; display: flex; align-items: center; gap: 10px; }
+        
+        /* 게이지 바 */
+        .gauge-track {
+            flex: 1; height: 20px; background: #222; border-radius: 10px; margin: 0 20px;
+            display: flex; overflow: hidden; border: 1px solid #444;
+        }
+        .gauge-segment { flex: 1; border-right: 2px solid #000; background: #333; transition: 0.3s; }
+        .gauge-segment:last-child { border-right: none; }
+        .gauge-segment.active { background: #40c4ff; box-shadow: 0 0 15px #40c4ff; }
+        
+        .hint-status-text { font-size: 0.9rem; color: #888; font-weight: bold; width: 100px; text-align: right; }
+
+        /* 그리드 영역 */
+        .game-frame {
+            flex: 1; display: flex; gap: 20px;
+            background: #1a1a1a; border: 2px solid #444; border-radius: 12px; padding: 25px;
         }
         
-        /* 스페셜 정비 버튼 스타일 */
-        .special-btn-area {
-            background: #222;
-            border: 1px solid #444;
-            padding: 15px;
-            text-align: center;
-            border-radius: 6px;
+        .grid-wrapper { flex: 1; }
+        .grid-container {
+            display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px;
         }
-        .big-yellow-btn {
-            background: var(--accent-yellow);
-            color: #000;
-            font-weight: 900;
-            font-size: 1.1rem;
-            width: 100%;
-            padding: 15px 0;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            box-shadow: 0 4px 0 #f9a825;
-            margin-bottom: 5px;
+        .slot {
+            aspect-ratio: 1/1;
+            background: #252525; border: 2px solid #3c3c3c; border-radius: 8px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            cursor: pointer; position: relative; transition: 0.1s;
+            /* 큼직한 숫자 디자인 */
+            font-family: 'Impact', sans-serif; font-size: 2rem; color: #555; letter-spacing: 1px;
         }
-        .big-yellow-btn:active { transform: translateY(2px); box-shadow: none; }
-        .cost-info { font-size: 0.75rem; color: #888; margin-top: 5px; }
+        .slot:hover { background: #333; border-color: #777; color: #888; }
+        .slot:active { transform: scale(0.95); }
 
-        /* 잔여 수량 테이블 (핵심 요청) */
-        .remain-table {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5px;
-            margin-top: 10px;
+        /* 힌트 및 오픈 상태 */
+        .slot.hinted {
+            border: 3px solid #40c4ff; color: #40c4ff;
+            background: rgba(64, 196, 255, 0.1);
+            animation: pulseBlue 1s infinite alternate;
         }
-        .remain-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #111;
-            border: 1px solid #333;
-            padding: 6px 10px;
-            border-radius: 3px;
+        .slot.opened { cursor: default; border: none; color: white; font-family: 'Pretendard', sans-serif; font-weight: 900; }
+        
+        .hint-tag {
+            position: absolute; bottom: 5px; width: 100%; text-align: center;
+            font-size: 0.7rem; font-family: 'Pretendard', sans-serif; letter-spacing: -0.5px;
         }
-        .tag {
-            font-size: 0.75rem;
-            font-weight: bold;
-            padding: 2px 6px;
-            border-radius: 2px;
-            color: white;
-            width: 35px;
-            text-align: center;
-        }
-        .count { font-size: 0.9rem; font-weight: bold; color: white; }
+        .text-green { color: #00e676; text-shadow: 0 0 3px black; }
+        .text-blue { color: #40c4ff; text-shadow: 0 0 3px black; }
 
-        /* 태그 색상 클래스 */
+        @keyframes pulseBlue { from { box-shadow: 0 0 5px #40c4ff; } to { box-shadow: 0 0 15px #40c4ff; } }
+
+        /* 등급 스타일 (큼직하게) */
+        .bg-SSS { background: var(--col-SSS); font-size: 2.2rem; border: 3px solid white !important; box-shadow: 0 0 25px var(--col-SSS); z-index: 10; transform: scale(1.05); }
+        .bg-SS  { background: var(--col-SS); font-size: 1.8rem; }
+        .bg-S   { background: var(--col-S); font-size: 1.8rem; }
+        .bg-A   { background: var(--col-A); font-size: 1.8rem; }
+        .bg-B   { background: var(--col-B); color: #000; font-size: 1.8rem; }
+        .bg-C   { background: var(--col-C); color: #aaa; font-size: 1.6rem; }
+
+        /* 우측 컨트롤 및 잔여수량 */
+        .side-controls { width: 220px; display: flex; flex-direction: column; gap: 15px; }
+        
+        .remain-box { background: #000; border: 1px solid #444; padding: 15px; border-radius: 8px; }
+        .remain-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; border-bottom: 1px solid #222; padding-bottom: 4px; }
+        .remain-row:last-child { margin-bottom: 0; border: none; }
+        .tag { padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; min-width: 40px; text-align: center; color: white; }
+        
         .tag-SSS { background: var(--col-SSS); }
         .tag-SS { background: var(--col-SS); }
         .tag-S { background: var(--col-S); }
         .tag-A { background: var(--col-A); }
-        .tag-B { background: var(--col-B); }
+        .tag-B { background: var(--col-B); color:black; }
         .tag-C { background: var(--col-C); }
 
-        /* 하단 버튼들 */
-        .control-btns { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
-        .sub-btn {
-            background: #333; color: #ccc; border: 1px solid #555; padding: 10px; cursor: pointer;
+        .btn-ai {
+            width: 100%; background: var(--accent-yellow); color: black; font-weight: 900; font-size: 1.2rem;
+            padding: 20px 0; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 5px 0 #f57f17;
+            text-transform: uppercase;
         }
-        .sub-btn:hover { background: #444; color: white; }
+        .btn-ai:active { transform: translateY(4px); box-shadow: none; }
 
-        /* === 오른쪽: 8x5 그리드 === */
-        .grid-area {
-            flex: 1;
+        .btn-reset {
+            width: 100%; background: #333; color: white; padding: 15px; font-weight: bold;
+            border: 1px solid #555; border-radius: 8px; cursor: pointer; margin-top: auto;
         }
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            gap: 6px;
-        }
-        .slot {
-            aspect-ratio: 1/1;
-            background: #263238; /* 닫힌 칸: 어두운 청회색 */
-            border: 1px solid #37474f;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #546e7a;
-            cursor: pointer;
-            position: relative;
-        }
-        .slot:hover { border-color: #78909c; background: #37474f; }
-        
-        /* 힌트 텍스트 */
-        .hint-text {
-            font-size: 0.55rem; position: absolute; bottom: 3px; width: 100%; text-align: center;
-        }
-        .text-hint-green { color: #69f0ae; } /* B이상 */
-        .text-hint-blue { color: #40c4ff; }   /* A이상 */
+        .btn-reset:hover { background: #444; }
 
-        /* 힌트 상태 */
-        .slot.hinted {
-            border: 2px solid var(--accent-yellow);
-            color: var(--accent-yellow);
-            animation: pulse 1s infinite alternate;
+        /* [우측] 획득 기록 */
+        .right-col { width: 250px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
+        .history-item {
+            background: #121212; padding: 12px; border-radius: 6px; border: 1px solid #333;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
         }
-        @keyframes pulse { from { opacity: 1; } to { opacity: 0.6; } }
-
-        /* 열린 상태 (요청하신 색상 적용) */
-        .slot.opened { cursor: default; border: none; color: white; }
-        .bg-SSS { background: var(--col-SSS); border: 2px solid white !important; box-shadow: 0 0 15px var(--col-SSS); z-index: 10; }
-        .bg-SS  { background: var(--col-SS); }
-        .bg-S   { background: var(--col-S); }
-        .bg-A   { background: var(--col-A); }
-        .bg-B   { background: var(--col-B); }
-        .bg-C   { background: var(--col-C); color: #ccc; }
+        .hist-val { font-size: 1.2rem; font-weight: bold; color: white; }
 
         /* 하단 로그 */
-        .log-bar {
-            margin-top: 15px;
-            background: #111;
-            padding: 10px;
-            font-size: 0.8rem;
-            color: #00e676;
-            font-family: monospace;
-            border-top: 2px solid #333;
-            height: 40px;
-            overflow: hidden;
-            white-space: nowrap;
+        .log-area {
+            background: #111; padding: 10px 20px; font-family: monospace; font-size: 0.9rem; color: #00e676;
+            border-top: 2px solid #333; white-space: nowrap; overflow: hidden;
         }
     </style>
 </head>
@@ -288,113 +233,154 @@
 
     <div class="header">
         <div class="header-title">REPAIR MASTER</div>
-        <div class="header-right">
-            <button class="top-btn yellow">SSS 정비 마스터</button>
-            <button class="top-btn">포인트 교환소</button>
-        </div>
+        <div class="header-badge">SIMULATOR V2.0</div>
     </div>
 
     <div class="main-container">
         
-        <div class="wallet-panel">
-            <div class="info-box">
-                <div class="info-title">보유 자산</div>
-                <div class="asset-row">
-                    <span style="color:#aaa;">FV</span>
-                    <span style="color:var(--col-S); font-weight:bold;" id="fv-disp">0</span>
+        <div class="left-col">
+            <div class="panel">
+                <div class="panel-header">내 자산 (WALLET)</div>
+                <div class="asset-box">
+                    <span class="asset-label">FV 포인트</span>
+                    <span class="asset-val" style="color:var(--col-S);" id="fv-disp">0</span>
                 </div>
-                <div class="asset-row">
-                    <span style="color:#aaa;">이용권</span>
-                    <span style="color:var(--accent-yellow); font-weight:bold;" id="ticket-disp">0장</span>
+                <div class="asset-box" style="border-color:var(--accent-yellow);">
+                    <span class="asset-label" style="color:var(--accent-yellow);">이용권</span>
+                    <span class="asset-val" style="color:var(--accent-yellow);" id="ticket-disp">0</span>
                 </div>
-                <div style="margin-top:10px;">
-                    <input type="number" id="fv-input" class="fv-input" placeholder="충전액 입력">
-                    <button class="top-btn" style="width:100%" onclick="chargeFV()">FV 충전하기</button>
+                <div>
+                    <input type="number" id="fv-input" class="input-dark" placeholder="충전할 금액 입력">
+                    <button class="btn-act" onclick="chargeFV()">충전하기</button>
                 </div>
             </div>
 
-            <div class="info-box">
-                <div class="info-title">이용권 구매 (1장=30FV)</div>
-                <button class="shop-btn" onclick="buyTicket(1)"><span>1장</span> <span style="font-size:0.8rem; color:#888;">30 FV</span></button>
-                <button class="shop-btn" onclick="buyTicket(10)"><span>10장</span> <span style="font-size:0.8rem; color:#888;">300 FV</span></button>
-                <button class="shop-btn" onclick="buyTicket(100)"><span>100장</span> <span style="font-size:0.8rem; color:#888;">3,000 FV</span></button>
-                <button class="shop-btn" onclick="buyTicket(1000)" style="border-color:var(--col-A);">
-                    <span style="color:var(--col-A);">1,000장</span> <span style="font-size:0.8rem; color:#888;">30,000 FV</span>
-                </button>
+            <div class="panel">
+                <div class="panel-header">티켓 교환소</div>
+                <div class="shop-grid">
+                    <div class="shop-btn" onclick="buyTicket(1)">
+                        <span class="shop-amt">1장</span><span class="shop-price">30 FV</span>
+                    </div>
+                    <div class="shop-btn" onclick="buyTicket(10)">
+                        <span class="shop-amt">10장</span><span class="shop-price">300 FV</span>
+                    </div>
+                    <div class="shop-btn" onclick="buyTicket(100)">
+                        <span class="shop-amt">100장</span><span class="shop-price">3,000 FV</span>
+                    </div>
+                    <div class="shop-btn" style="border-color:var(--col-A);" onclick="buyTicket(1000)">
+                        <span class="shop-amt" style="color:var(--col-A);">1,000장</span><span class="shop-price">30,000 FV</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="game-frame">
+        <div class="center-col">
             
-            <div class="game-controls">
-                <div class="special-btn-area">
-                    <div style="color:var(--accent-yellow); font-weight:bold; margin-bottom:10px; display:flex; align-items:center; gap:5px;">
-                        <span>★</span> 스페셜 정비
+            <div class="hint-dashboard">
+                <div class="hint-label">
+                    <span style="font-size:1.5rem;">⚡</span> HINT GAUGE
+                </div>
+                <div class="gauge-track">
+                    <div class="gauge-segment" id="seg-1"></div>
+                    <div class="gauge-segment" id="seg-2"></div>
+                    <div class="gauge-segment" id="seg-3"></div>
+                </div>
+                <div class="hint-status-text" id="hint-status">0 / 3</div>
+            </div>
+
+            <div class="game-frame">
+                <div class="side-controls">
+                    <div class="remain-box">
+                        <div style="text-align:center; color:#888; margin-bottom:10px; font-size:0.9rem;">남은 보상 수량</div>
+                        <div class="remain-row"><span class="tag tag-SSS">SSS</span> <span id="cnt-SSS">1</span></div>
+                        <div class="remain-row"><span class="tag tag-SS">SS</span> <span id="cnt-SS">2</span></div>
+                        <div class="remain-row"><span class="tag tag-S">S</span> <span id="cnt-S">3</span></div>
+                        <div class="remain-row"><span class="tag tag-A">A</span> <span id="cnt-A">10</span></div>
+                        <div class="remain-row"><span class="tag tag-B">B</span> <span id="cnt-B">12</span></div>
+                        <div class="remain-row"><span class="tag tag-C">C</span> <span id="cnt-C">12</span></div>
                     </div>
-                    <button class="big-yellow-btn" onclick="autoAI()">
-                        AI 자동 정비
-                    </button>
-                    <div class="cost-info">[1회 소모: 이용권 30장]</div>
+                    
+                    <div>
+                        <button class="btn-ai" onclick="autoAI()">AI 자동 정비</button>
+                        <div style="text-align:center; font-size:0.8rem; color:#666; margin-top:5px;">1회 소모: 이용권 30장</div>
+                    </div>
+                    
+                    <button class="btn-reset" onclick="resetBoard()">판 초기화 (RESET)</button>
                 </div>
 
-                <div style="background:#111; padding:10px; border:1px solid #333; border-radius:6px;">
-                    <div style="font-size:0.8rem; color:#888; margin-bottom:5px; text-align:center;">잔여 보상</div>
-                    <div class="remain-table">
-                        <div class="remain-item"><span class="tag tag-SSS">SSS</span> <span class="count" id="cnt-SSS">1</span></div>
-                        <div class="remain-item"><span class="tag tag-SS">SS</span> <span class="count" id="cnt-SS">2</span></div>
-                        <div class="remain-item"><span class="tag tag-S">S</span> <span class="count" id="cnt-S">3</span></div>
-                        <div class="remain-item"><span class="tag tag-A">A</span> <span class="count" id="cnt-A">10</span></div>
-                        <div class="remain-item"><span class="tag tag-B">B</span> <span class="count" id="cnt-B">12</span></div>
-                        <div class="remain-item"><span class="tag tag-C">C</span> <span class="count" id="cnt-C">12</span></div>
-                    </div>
-                </div>
-
-                <div class="control-btns">
-                    <button class="sub-btn" onclick="resetBoard()">정비 재시작 (초기화)</button>
+                <div class="grid-wrapper">
+                    <div class="grid-container" id="grid">
+                        </div>
                 </div>
             </div>
 
-            <div class="grid-area">
-                <div style="display:grid; grid-template-columns:repeat(8, 1fr); text-align:center; margin-bottom:5px; color:#555; font-size:0.8rem; font-weight:bold;">
-                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
+            <div class="log-area" id="log-text">
+                [SYSTEM] REPAIR MASTER READY.
+            </div>
+        </div>
+
+        <div class="right-col">
+            <div class="panel" style="height:100%;">
+                <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>획득 기록</span>
+                    <span style="font-size:0.7rem; cursor:pointer; text-decoration:underline;" onclick="resetTotal()">초기화</span>
                 </div>
-                <div class="grid-container" id="grid">
+                <div style="flex:1;">
+                    <div class="history-item" style="border-color:var(--col-SSS);">
+                        <span class="tag tag-SSS">SSS</span> <span class="hist-val" id="total-SSS" style="color:var(--col-SSS);">0</span>
                     </div>
-                <div class="log-bar" id="log-text">
-                    [SYSTEM] 정비마스터 시뮬레이터 준비 완료
+                    <div class="history-item" style="border-color:var(--col-SS);">
+                        <span class="tag tag-SS">SS</span> <span class="hist-val" id="total-SS" style="color:var(--col-SS);">0</span>
+                    </div>
+                    <div class="history-item" style="border-color:var(--col-S);">
+                        <span class="tag tag-S">S</span> <span class="hist-val" id="total-S" style="color:var(--col-S);">0</span>
+                    </div>
+                    <div class="history-item" style="border-color:var(--col-A);">
+                        <span class="tag tag-A">A</span> <span class="hist-val" id="total-A" style="color:var(--col-A);">0</span>
+                    </div>
+                    <div class="history-item" style="border-color:var(--col-B);">
+                        <span class="tag tag-B">B</span> <span class="hist-val" id="total-B" style="color:var(--col-B);">0</span>
+                    </div>
+                    <div class="history-item" style="border-color:var(--col-C);">
+                        <span class="tag tag-C">C</span> <span class="hist-val" id="total-C">0</span>
+                    </div>
+                </div>
+                <div style="background:#000; padding:10px; border-radius:6px; border:1px solid #333;">
+                    <div style="font-size:0.8rem; color:#888;">총 시도 횟수</div>
+                    <div style="font-size:1.5rem; font-weight:bold; text-align:right;" id="total-open-count">0</div>
                 </div>
             </div>
-
         </div>
 
     </div>
 
 <script>
-    // === 상태 변수 ===
+    // === Variables ===
     let myFV = 0;
     let myTickets = 0;
-    let board = []; // {reward: 'S', opened: false, hinted: false}
+    let board = [];
     let isAutoRunning = false;
-    let hintCount = 0;
+    let hintCount = 0; // 0 ~ 3
+    
+    // Total Stats
+    let totalStats = { SSS:0, SS:0, S:0, A:0, B:0, C:0 };
+    let totalOpens = 0;
 
-    // === 초기화 및 로직 ===
+    // === Initialization ===
     function initBoard() {
-        // 1. 보상 배열 생성
         let rewards = [
             ...Array(1).fill('SSS'), ...Array(2).fill('SS'), ...Array(3).fill('S'),
             ...Array(10).fill('A'), ...Array(12).fill('B'), ...Array(12).fill('C')
         ];
 
-        // 2. 셔플 & 유효성 검사 (C 좌우 금지)
+        // Shuffle & Validate (No C-C neighbor)
         let attempts = 0;
         while(true) {
             attempts++;
-            // Fisher-Yates Shuffle
             for (let i = rewards.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [rewards[i], rewards[j]] = [rewards[j], rewards[i]];
             }
-            
             let valid = true;
             for(let i=0; i<40; i++) {
                 if(rewards[i] === 'C') {
@@ -403,19 +389,19 @@
                 }
             }
             if(valid) break;
-            if(attempts > 2000) break; // 무한루프 방지
+            if(attempts > 3000) break; 
         }
 
-        // 3. 보드 상태 설정
         board = rewards.map(r => ({ reward: r, opened: false, hinted: false }));
         hintCount = 0;
         
+        updateHintGauge(); // UI Reset
         renderBoard();
         updateRemainCounts();
-        log("[SYSTEM] 보상판이 재배치되었습니다.");
+        log("[SYSTEM] 새로운 판이 배치되었습니다.");
     }
 
-    // === 렌더링 ===
+    // === Visual Rendering ===
     function renderBoard() {
         const grid = document.getElementById('grid');
         grid.innerHTML = '';
@@ -426,74 +412,92 @@
             let html = '';
 
             if (slot.opened) {
-                // 열린 상태
                 cls += ` opened bg-${slot.reward}`;
                 html = slot.reward;
             } else {
-                // 닫힌 상태 (번호 or 힌트)
+                // CLOSED STATE
                 if (slot.hinted) {
                     cls += ' hinted';
-                    html = `?<div class="hint-text text-hint-blue">(A↑)</div>`;
+                    html = `?<div class="hint-tag text-blue">A등급↑</div>`;
                 } else {
                     html = (i + 1);
                     
-                    // C등급 인접 힌트 (열린 C 옆)
-                    let showGreenHint = false;
-                    if(i % 8 > 0 && board[i-1].opened && board[i-1].reward === 'C') showGreenHint = true;
-                    if(i % 8 < 7 && board[i+1].opened && board[i+1].reward === 'C') showGreenHint = true;
+                    // C-Neighbor Hint
+                    let showGreen = false;
+                    if(i % 8 > 0 && board[i-1].opened && board[i-1].reward === 'C') showGreen = true;
+                    if(i % 8 < 7 && board[i+1].opened && board[i+1].reward === 'C') showGreen = true;
 
-                    if(showGreenHint) {
-                        html += `<div class="hint-text text-hint-green">(B↑)</div>`;
+                    if(showGreen) {
+                        html += `<div class="hint-tag text-green">B등급↑</div>`;
                     }
                 }
                 div.onclick = () => openSlot(i);
             }
-
             div.className = cls;
             div.innerHTML = html;
             grid.appendChild(div);
         });
     }
 
-    // === 잔여 수량 업데이트 (요청 기능) ===
-    function updateRemainCounts() {
-        const counts = { SSS:0, SS:0, S:0, A:0, B:0, C:0 };
-        board.forEach(slot => {
-            if(!slot.opened) counts[slot.reward]++;
-        });
-
-        for(let key in counts) {
-            document.getElementById(`cnt-${key}`).innerText = counts[key];
+    function updateHintGauge() {
+        // hintCount: 0, 1, 2. (3이 되는 순간 발동 후 0으로 리셋됨)
+        // 화면 표시는 다음 힌트까지 남은 횟수로 하는 게 더 직관적일 수도 있으나
+        // 요청하신 "몇 번 더 눌러야 하는지"를 위해 게이지를 채우는 방식 채택.
+        
+        // 게이지 채우기
+        for(let i=1; i<=3; i++) {
+            const seg = document.getElementById(`seg-${i}`);
+            if(i <= hintCount) seg.classList.add('active');
+            else seg.classList.remove('active');
         }
+        
+        const remaining = 3 - hintCount;
+        let text = "";
+        if(hintCount === 0) text = "0 / 3";
+        else if(hintCount === 3) text = "READY!"; // 사실 로직상 3은 순간적임
+        else text = `${hintCount} / 3`;
+
+        document.getElementById('hint-status').innerText = text;
     }
 
-    // === 슬롯 오픈 ===
+    // === Game Logic ===
     function openSlot(i) {
         if(board[i].opened) return;
         if(myTickets < 30) {
-            log("[오류] 이용권이 부족합니다.");
+            log("[ERROR] 이용권이 부족합니다.");
             isAutoRunning = false;
             return;
         }
 
         myTickets -= 30;
         updateDisplay();
-        
+
         board[i].opened = true;
-        hintCount++;
         
-        // 3회마다 힌트
-        if(hintCount % 3 === 0) giveHint();
+        // --- Hint Logic Update ---
+        hintCount++;
+        let hintTriggered = false;
+        if(hintCount >= 3) {
+            hintCount = 0; // Reset
+            hintTriggered = true;
+        }
+        updateHintGauge(); // Update UI
+        
+        // Stats
+        totalStats[board[i].reward]++;
+        totalOpens++;
+        updateTotalStats();
+        
+        // Apply Hint if triggered
+        if(hintTriggered) giveHint();
 
         renderBoard();
         updateRemainCounts();
 
         const reward = board[i].reward;
-        
         if(reward === 'SSS') {
-            log(`★ JACKPOT! SSS 등급 획득! ★`);
+            log(`★ JACKPOT! SSS 획득! ★`);
             if(isAutoRunning) {
-                // AI는 자동 리셋
                 setTimeout(() => {
                     initBoard();
                     if(isAutoRunning && myTickets >= 30) setTimeout(runAILoop, 300);
@@ -503,16 +507,26 @@
             }
             return 'SSS';
         } else {
-            log(`${i+1}번 오픈 -> [${reward}] 획득`);
+            log(`${i+1}번 오픈 -> [${reward}]`);
         }
         return reward;
     }
 
-    // === AI 로직 ===
+    function giveHint() {
+        const targets = board.map((s, i) => i).filter(i => !s.opened && ['SSS','SS','S','A'].includes(s.reward));
+        if(targets.length > 0) {
+            const idx = targets[Math.floor(Math.random()*targets.length)];
+            board[idx].hinted = true;
+            renderBoard();
+            log("[HINT] A등급 이상 위치 힌트 발동!");
+        }
+    }
+
+    // === AI ===
     function autoAI() {
         if(isAutoRunning) return;
         isAutoRunning = true;
-        log("[AI] 자동 정비 시작...");
+        log("[AI] 자동 정비를 시작합니다.");
         runAILoop();
     }
 
@@ -524,13 +538,14 @@
             return;
         }
 
-        // 전략: 1. 시스템 힌트 -> 2. C 옆 -> 3. 랜덤
         let target = -1;
+        
+        // Priority 1: Hinted
         const hints = board.map((s,i)=>i).filter(i => s.hinted && !s.opened);
         if(hints.length > 0) target = hints[0];
 
+        // Priority 2: C-Neighbor
         if(target === -1) {
-            // 직전 오픈이 C였는지 확인하는 로직 대신, 현재 판에서 열린 C 옆의 닫힌 칸 찾기
             const cNeighbors = [];
             board.forEach((s, i) => {
                 if(s.opened && s.reward === 'C') {
@@ -541,6 +556,7 @@
             if(cNeighbors.length > 0) target = cNeighbors[Math.floor(Math.random()*cNeighbors.length)];
         }
 
+        // Priority 3: Random
         if(target === -1) {
             const unopened = board.map((s,i)=>i).filter(i => !s.opened);
             if(unopened.length === 0) {
@@ -555,20 +571,28 @@
         if(res !== 'SSS') setTimeout(runAILoop, 150);
     }
 
-    function giveHint() {
-        const targets = board.map((s, i) => i).filter(i => !s.opened && ['SSS','SS','S','A'].includes(s.reward));
-        if(targets.length > 0) {
-            const idx = targets[Math.floor(Math.random()*targets.length)];
-            board[idx].hinted = true;
-            renderBoard();
+    // === UI Updates ===
+    function updateRemainCounts() {
+        const counts = { SSS:0, SS:0, S:0, A:0, B:0, C:0 };
+        board.forEach(s => { if(!s.opened) counts[s.reward]++; });
+        for(let k in counts) document.getElementById(`cnt-${k}`).innerText = counts[k];
+    }
+    
+    function updateTotalStats() {
+        for(let k in totalStats) document.getElementById(`total-${k}`).innerText = totalStats[k].toLocaleString();
+        document.getElementById('total-open-count').innerText = totalOpens.toLocaleString();
+    }
+
+    function resetTotal() {
+        if(confirm("기록을 초기화하시겠습니까?")) {
+            totalStats = { SSS:0, SS:0, S:0, A:0, B:0, C:0 };
+            totalOpens = 0;
+            updateTotalStats();
         }
     }
 
-    function resetBoard() {
-        initBoard();
-    }
+    function resetBoard() { initBoard(); }
 
-    // === 자산 관련 ===
     function chargeFV() {
         const val = parseInt(document.getElementById('fv-input').value);
         if(val > 0) {
@@ -591,13 +615,13 @@
     }
     function updateDisplay() {
         document.getElementById('fv-disp').innerText = myFV.toLocaleString();
-        document.getElementById('ticket-disp').innerText = myTickets.toLocaleString() + '장';
+        document.getElementById('ticket-disp').innerText = myTickets.toLocaleString();
     }
     function log(msg) {
         document.getElementById('log-text').innerText = msg;
     }
 
-    // 실행
+    // Start
     initBoard();
 </script>
 
