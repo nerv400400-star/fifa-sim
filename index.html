@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>REPAIR MASTER - ORIGINAL DESIGN</title>
+    <title>REPAIR MASTER - STABLE v5.0</title>
     <style>
-        /* ========================================= */
-        /* [1. 기본 설정 및 색상 변수] */
-        /* ========================================= */
+        /* [1. CSS 테마 및 등급별 색상] */
         :root {
             --bg-body: #050505;
             --bg-panel: #161616;
@@ -16,7 +14,7 @@
             --accent-red: #d32f2f;
             --text-white: #fff;
             
-            /* 등급별 고유 색상 */
+            /* 등급 색상 */
             --col-SSS: #e040fb; /* 보라 */
             --col-SS: #ff6d00;  /* 주황 */
             --col-S: #ff1744;   /* 빨강 */
@@ -25,161 +23,150 @@
             --col-C: #616161;   /* 회색 */
         }
 
+        /* 기본 초기화 - 화면 흔들림 방지를 위해 마진/패딩 제거 */
         * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
         
         body {
             background-color: var(--bg-body);
             color: var(--text-white);
-            font-family: 'Pretendard', sans-serif;
+            font-family: 'Pretendard', -apple-system, sans-serif;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden; 
+            overflow: hidden; /* PC에서는 스크롤을 막아 덜컹거림 방지 */
         }
 
-        /* ========================================= */
         /* [2. 상단 헤더] */
-        /* ========================================= */
         .header {
-            height: 80px; 
-            background: #000; 
+            height: 70px;
+            background: #000;
             border-bottom: 4px solid var(--accent-red);
-            display: flex; 
-            align-items: center; 
-            padding: 0 40px; 
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
             justify-content: space-between;
-            flex-shrink: 0; 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.8); 
+            flex-shrink: 0;
             z-index: 100;
         }
         .header-title {
-            font-family: 'Impact', sans-serif; 
-            font-size: 2.5rem; 
-            color: white; 
-            letter-spacing: 2px; 
-            text-transform: uppercase; 
-            text-shadow: 3px 3px 0 #d32f2f;
+            font-family: 'Impact', sans-serif;
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 0 #d32f2f;
         }
         .header-badge {
-            background: #333; 
-            padding: 5px 12px; 
-            border-radius: 4px; 
-            font-weight: bold; 
-            font-size: 0.9rem; 
+            background: #333;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.8rem;
             border: 1px solid #555;
         }
 
-        /* ========================================= */
-        /* [3. 메인 레이아웃 (3단 배치)] */
-        /* ========================================= */
+        /* [3. 메인 컨테이너] */
         .main-container {
-            flex: 1; 
-            display: flex; 
-            padding: 30px; 
-            gap: 25px;
-            justify-content: center; 
+            flex: 1;
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            justify-content: center;
             overflow-y: auto;
             background: radial-gradient(circle at center, #222 0%, #000 100%);
         }
 
         .panel {
-            background: var(--bg-panel); 
+            background: var(--bg-panel);
             border: 2px solid var(--border-panel);
-            border-radius: 12px; 
-            padding: 20px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 15px;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-        }
-        .panel-header {
-            font-size: 1.1rem; 
-            font-weight: bold; 
-            color: #ccc;
-            border-left: 5px solid var(--accent-red); 
-            padding-left: 15px; 
-            margin-bottom: 5px;
-            text-transform: uppercase; 
-            letter-spacing: 1px;
         }
 
         /* 좌측: 자산 및 상점 */
-        .left-col { width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
+        .left-col { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
         .asset-box {
-            background: #000; border: 2px solid #333; border-radius: 8px; padding: 15px;
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+            background: #000; border: 2px solid #333; border-radius: 6px; padding: 12px;
+            display: flex; justify-content: space-between; align-items: center;
         }
-        .asset-val { font-size: 1.5rem; font-weight: 900; }
-        .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .asset-val { font-size: 1.4rem; font-weight: 900; }
+        .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .shop-btn {
-            background: #222; border: 2px solid #444; color: #fff; padding: 15px 10px;
-            display: flex; flex-direction: column; align-items: center; gap: 5px;
-            cursor: pointer; border-radius: 6px; transition: 0.1s;
+            background: #222; border: 2px solid #444; padding: 10px;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            cursor: pointer; border-radius: 6px;
         }
         .shop-btn:hover { border-color: var(--accent-yellow); color: var(--accent-yellow); }
         .input-dark {
             width: 100%; background: #000; border: 2px solid #444; color: white;
-            padding: 12px; font-size: 1rem; text-align: center; border-radius: 6px; font-weight: bold;
+            padding: 10px; font-size: 1rem; text-align: center; border-radius: 6px; font-weight: bold;
         }
         .btn-act {
-            width: 100%; background: #444; color: white; border: none; padding: 12px;
-            font-weight: bold; cursor: pointer; border-radius: 6px; margin-top: 5px;
+            width: 100%; background: #444; color: white; border: none; padding: 10px;
+            font-weight: bold; cursor: pointer; border-radius: 6px;
         }
 
-        /* 중앙: 게임 보드 */
-        .center-col { flex: 1; max-width: 900px; min-width: 750px; display: flex; flex-direction: column; gap: 20px; }
+        /* 중앙: 게임 영역 */
+        .center-col { flex: 1; max-width: 800px; min-width: 650px; display: flex; flex-direction: column; gap: 15px; }
+        
+        /* 힌트 게이지바 - 높이 고정으로 첫 클릭 시 밀림 방지 */
         .hint-dashboard {
+            height: 60px;
             display: flex; align-items: center; justify-content: space-between;
-            background: #000; border: 2px solid #444; border-radius: 10px; padding: 15px 25px;
+            background: #000; border: 2px solid #444; border-radius: 10px; padding: 0 20px;
         }
         .gauge-track {
-            flex: 1; height: 20px; background: #222; border-radius: 10px; margin: 0 20px;
+            flex: 1; height: 16px; background: #222; border-radius: 10px; margin: 0 15px;
             display: flex; overflow: hidden; border: 1px solid #444;
         }
-        .gauge-segment { flex: 1; border-right: 2px solid #000; background: #333; transition: 0.3s; }
-        .gauge-segment.active { background: #40c4ff; box-shadow: 0 0 15px #40c4ff; }
+        .gauge-segment { flex: 1; border-right: 1px solid #000; background: #333; transition: 0.3s; }
+        .gauge-segment.active { background: #40c4ff; box-shadow: 0 0 10px #40c4ff; }
 
+        /* 게임 보드 프레임 */
         .game-frame {
-            flex: 1; display: flex; gap: 20px;
-            background: #1a1a1a; border: 2px solid #444; border-radius: 12px; padding: 25px;
+            flex: 1; display: flex; gap: 15px;
+            background: #1a1a1a; border: 2px solid #444; border-radius: 10px; padding: 20px;
         }
 
-        /* [핵심] 그리드 - 큼직한 숫자 디자인 유지 */
-        .grid-container { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; flex: 1; }
+        /* 그리드 영역 - 칸 크기 절대 고정 */
+        .grid-container { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; flex: 1; }
         .slot {
             aspect-ratio: 1/1;
-            background: #252525; border: 2px solid #3c3c3c; border-radius: 8px;
+            background: #252525; border: 2px solid #3c3c3c; border-radius: 6px;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             cursor: pointer; position: relative;
-            /* 큼직한 숫자 스타일 */
-            font-family: 'Impact', sans-serif; font-size: 2rem; color: #555;
-            transition: background 0.1s;
+            /* 폰트 크기 고정 ( Impact 폰트는 숫자용, Pretendard는 텍스트용 ) */
+            font-family: 'Impact', sans-serif; font-size: 1.8rem; color: #555;
+            overflow: hidden;
         }
-        .slot:hover { background: #2e2e2e; }
-        .slot.hinted { border: 3px solid #40c4ff; color: #40c4ff; background: rgba(64, 196, 255, 0.1); }
+        .slot.hinted { border: 2px solid #40c4ff; color: #40c4ff; background: rgba(64, 196, 255, 0.1); }
         .slot.opened { cursor: default; border: 2px solid transparent !important; color: white; font-family: 'Pretendard', sans-serif; font-weight: 900; }
         
-        /* 등급별 고정 스타일 (화면 커짐 방지) */
-        .bg-SSS { background: var(--col-SSS) !important; border: 2px solid #fff !important; box-shadow: 0 0 20px var(--col-SSS) !important; font-size: 1.8rem !important; }
-        .bg-SS  { background: var(--col-SS) !important; font-size: 1.8rem !important; }
-        .bg-S   { background: var(--col-S) !important; font-size: 1.8rem !important; }
-        .bg-A   { background: var(--col-A) !important; font-size: 1.8rem !important; }
-        .bg-B   { background: var(--col-B) !important; color: #000 !important; font-size: 1.8rem !important; }
-        .bg-C   { background: var(--col-C) !important; color: #aaa !important; font-size: 1.6rem !important; }
+        /* 등급별 스타일 - [중요] transform: scale 절대 금지, 폰트 크기 1.6rem으로 통일 */
+        .bg-SSS { background: var(--col-SSS) !important; border: 2px solid #fff !important; box-shadow: 0 0 15px var(--col-SSS) !important; font-size: 1.6rem !important; }
+        .bg-SS  { background: var(--col-SS) !important; font-size: 1.6rem !important; }
+        .bg-S   { background: var(--col-S) !important; font-size: 1.6rem !important; }
+        .bg-A   { background: var(--col-A) !important; font-size: 1.6rem !important; }
+        .bg-B   { background: var(--col-B) !important; color: #000 !important; font-size: 1.6rem !important; }
+        .bg-C   { background: var(--col-C) !important; color: #aaa !important; font-size: 1.5rem !important; }
 
-        .hint-tag { position: absolute; bottom: 5px; width: 100%; text-align: center; font-size: 0.7rem; font-family: 'Pretendard', sans-serif; }
-        .text-green { color: #00e676; text-shadow: 0 0 2px black; } 
+        /* 힌트 태그 */
+        .hint-tag { position: absolute; bottom: 2px; width: 100%; text-align: center; font-size: 0.6rem; font-family: 'Pretendard', sans-serif; font-weight: bold; }
+        .text-green { color: #00e676; text-shadow: 0 0 2px black; }
         .text-blue { color: #40c4ff; text-shadow: 0 0 2px black; }
 
         /* 사이드 컨트롤 */
-        .side-controls { width: 220px; display: flex; flex-direction: column; gap: 15px; }
-        .remain-box { background: #000; border: 1px solid #444; padding: 15px; border-radius: 8px; }
-        .remain-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; border-bottom: 1px solid #222; }
-        .tag { padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; min-width: 40px; text-align: center; color: white; }
+        .side-controls { width: 180px; display: flex; flex-direction: column; gap: 10px; }
+        .remain-box { background: #000; border: 1px solid #444; padding: 10px; border-radius: 6px; }
+        .remain-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; border-bottom: 1px solid #222; }
+        .tag { padding: 1px 6px; border-radius: 3px; font-size: 0.75rem; min-width: 35px; text-align: center; color: white; }
 
         .btn-ai {
-            width: 100%; background: #333; color: #888; font-weight: 900; font-size: 1.2rem;
-            padding: 20px 0; border: 2px solid #555; border-radius: 8px; cursor: pointer;
+            width: 100%; background: #333; color: #888; font-weight: 900; font-size: 1.1rem;
+            padding: 15px 0; border: 2px solid #555; border-radius: 8px; cursor: pointer;
             text-transform: uppercase; transition: 0.2s;
         }
         .btn-ai.running {
@@ -189,25 +176,32 @@
         @keyframes pulseBtn { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
 
         /* 우측: 기록실 */
-        .right-col { width: 250px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
+        .right-col { width: 230px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
         .history-item {
-            background: #121212; padding: 12px; border-radius: 6px; border: 1px solid #333;
+            background: #121212; padding: 10px; border-radius: 6px; border: 1px solid #333;
             display: flex; justify-content: space-between; align-items: center;
         }
-        .log-area { background: #111; padding: 10px 20px; font-family: monospace; font-size: 0.9rem; color: #00e676; border-top: 2px solid #333; overflow: hidden; height: 45px; line-height: 25px; }
+        
+        /* 로그 영역 - 높이 고정으로 첫 클릭 시 화면 밀림 방지 */
+        .log-area { 
+            height: 45px; background: #111; padding: 10px 15px; font-family: monospace; 
+            font-size: 0.85rem; color: #00e676; border-top: 2px solid #333; 
+            overflow: hidden; line-height: 25px; white-space: nowrap; 
+        }
 
-        /* [모바일 대응] */
+        /* [4. 모바일 반응형] */
         @media (max-width: 1100px) {
             body { height: auto; overflow-y: auto; }
-            .header { padding: 0 20px; } .header-title { font-size: 1.8rem; }
+            .header-title { font-size: 1.8rem; }
             .main-container { flex-direction: column; padding: 15px; gap: 15px; }
             .center-col { order: 1; width: 100%; min-width: 0; }
             .left-col, .right-col { order: 2; width: 100%; }
-            .game-frame { flex-direction: column-reverse; padding: 15px; }
+            .game-frame { flex-direction: column-reverse; padding: 10px; }
             .side-controls { width: 100%; flex-direction: row; flex-wrap: wrap; }
             .remain-box { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
             .shop-grid { grid-template-columns: repeat(4, 1fr); }
-            .slot { font-size: 1.5rem; }
+            .slot { font-size: 1.4rem; }
+            .bg-SSS, .bg-SS, .bg-S { font-size: 1.3rem !important; }
         }
     </style>
 </head>
@@ -215,79 +209,92 @@
 
     <div class="header">
         <div class="header-title">REPAIR MASTER</div>
-        <div class="header-badge">ORIGINAL v4.9</div>
+        <div class="header-badge">STABLE v5.0</div>
     </div>
 
     <div class="main-container">
+        <!-- [좌측] 자산 & 상점 -->
         <div class="left-col">
             <div class="panel">
-                <div class="panel-header">내 자산</div>
+                <div class="panel-header" style="color:#aaa; border-left:4px solid var(--accent-red); padding-left:10px;">WALLET</div>
                 <div class="asset-box">
-                    <span style="color:#888; font-weight:bold;">FV POINT</span>
+                    <span style="color:#888; font-weight:bold; font-size:0.8rem;">FV POINT</span>
                     <span class="asset-val" style="color:var(--col-S);" id="fv-disp">0</span>
                 </div>
                 <div class="asset-box" style="border-color:var(--accent-yellow);">
-                    <span style="color:var(--accent-yellow); font-weight:bold;">TICKETS</span>
+                    <span style="color:var(--accent-yellow); font-weight:bold; font-size:0.8rem;">TICKETS</span>
                     <span class="asset-val" style="color:var(--accent-yellow);" id="ticket-disp">0</span>
                 </div>
-                <input type="number" id="fv-input" class="input-dark" placeholder="충전액">
+                <input type="number" id="fv-input" class="input-dark" placeholder="충전액 입력">
                 <button class="btn-act" onclick="chargeFV()">충전하기</button>
             </div>
+
             <div class="panel">
-                <div class="panel-header">티켓 상점</div>
+                <div class="panel-header" style="color:#aaa; border-left:4px solid var(--accent-red); padding-left:10px;">SHOP</div>
                 <div class="shop-grid">
-                    <div class="shop-btn" onclick="buyTicket(1)"><strong>1장</strong><span style="font-size:0.7rem; color:#888;">30FV</span></div>
-                    <div class="shop-btn" onclick="buyTicket(10)"><strong>10장</strong><span style="font-size:0.7rem; color:#888;">300FV</span></div>
-                    <div class="shop-btn" onclick="buyTicket(100)"><strong>100장</strong><span style="font-size:0.7rem; color:#888;">3,000FV</span></div>
-                    <div class="shop-btn" onclick="buyTicket(1000)" style="border-color:var(--col-A);"><strong style="color:var(--col-A);">1,000장</strong><span style="font-size:0.7rem; color:#888;">30,000</span></div>
+                    <div class="shop-btn" onclick="buyTicket(1)"><span style="font-weight:900;">1장</span><span style="font-size:0.7rem; color:#888;">30FV</span></div>
+                    <div class="shop-btn" onclick="buyTicket(10)"><span style="font-weight:900;">10장</span><span style="font-size:0.7rem; color:#888;">300FV</span></div>
+                    <div class="shop-btn" onclick="buyTicket(100)"><span style="font-weight:900;">100장</span><span style="font-size:0.7rem; color:#888;">3,000FV</span></div>
+                    <div class="shop-btn" onclick="buyTicket(1000)" style="border-color:var(--col-A);"><span style="font-weight:900; color:var(--col-A);">1,000장</span><span style="font-size:0.7rem; color:#888;">30,000</span></div>
                 </div>
             </div>
         </div>
 
+        <!-- [중앙] 게임 메인 영역 -->
         <div class="center-col">
+            <!-- 힌트 대시보드 (높이 고정) -->
             <div class="hint-dashboard">
-                <div style="color:#40c4ff; font-weight:bold; font-size:1.2rem;">⚡ HINT GAUGE</div>
+                <div style="color:#40c4ff; font-weight:bold; font-size:1.1rem;">⚡ HINT GAUGE</div>
                 <div class="gauge-track">
                     <div class="gauge-segment" id="seg-1"></div>
                     <div class="gauge-segment" id="seg-2"></div>
                     <div class="gauge-segment" id="seg-3"></div>
                 </div>
-                <div id="hint-status" style="font-weight:bold; color:#888;">0 / 3</div>
+                <div id="hint-status" style="font-weight:bold; color:#888; min-width:40px; text-align:right;">0 / 3</div>
             </div>
+
             <div class="game-frame">
+                <!-- 사이드 컨트롤 -->
                 <div class="side-controls">
                     <div class="remain-box">
-                        <div class="remain-row"><span class="tag tag-SSS">SSS</span> <span id="cnt-SSS">0</span></div>
-                        <div class="remain-row"><span class="tag tag-SS">SS</span> <span id="cnt-SS">0</span></div>
-                        <div class="remain-row"><span class="tag tag-S">S</span> <span id="cnt-S">0</span></div>
-                        <div class="remain-row"><span class="tag tag-A">A</span> <span id="cnt-A">0</span></div>
-                        <div class="remain-row"><span class="tag tag-B">B</span> <span id="cnt-B">0</span></div>
-                        <div class="remain-row"><span class="tag tag-C">C</span> <span id="cnt-C">0</span></div>
+                        <div class="remain-row"><span class="tag" style="background:var(--col-SSS)">SSS</span> <span id="cnt-SSS">0</span></div>
+                        <div class="remain-row"><span class="tag" style="background:var(--col-SS)">SS</span> <span id="cnt-SS">0</span></div>
+                        <div class="remain-row"><span class="tag" style="background:var(--col-S)">S</span> <span id="cnt-S">0</span></div>
+                        <div class="remain-row"><span class="tag" style="background:var(--col-A)">A</span> <span id="cnt-A">0</span></div>
+                        <div class="remain-row"><span class="tag" style="background:var(--col-B); color:#000;">B</span> <span id="cnt-B">0</span></div>
+                        <div class="remain-row"><span class="tag" style="background:var(--col-C)">C</span> <span id="cnt-C">0</span></div>
                     </div>
-                    <button class="btn-ai" id="btn-ai" onclick="toggleAI()">AI AUTO<br><span style="font-size:0.8rem;">[OFF]</span></button>
-                    <button class="btn-act" style="margin-top:auto;" onclick="resetBoard()">판 초기화</button>
+                    <div>
+                        <button class="btn-ai" id="btn-ai" onclick="toggleAI()">AI AUTO<br><span style="font-size:0.7rem;">[OFF]</span></button>
+                        <div style="text-align:center; font-size:0.7rem; color:#555; margin-top:5px;">1회: 티켓 30장</div>
+                    </div>
+                    <button class="btn-act" style="margin-top:auto; background:#333;" onclick="resetBoard()">판 초기화</button>
                 </div>
+
+                <!-- 8x5 그리드 -->
                 <div class="grid-container" id="grid"></div>
             </div>
-            <div class="log-area" id="log-text">[SYSTEM] READY.</div>
+            <!-- 하단 로그 (높이 고정) -->
+            <div class="log-area" id="log-text">[SYSTEM] REPAIR MASTER READY.</div>
         </div>
 
+        <!-- [우측] 기록실 -->
         <div class="right-col">
             <div class="panel" style="height:100%;">
-                <div class="panel-header" style="display:flex; justify-content:space-between;">
-                    <span>RECORDS</span>
-                    <span style="font-size:0.7rem; cursor:pointer; text-decoration:underline;" onclick="resetTotal()">초기화</span>
+                <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="color:#aaa;">RECORDS</span>
+                    <span style="font-size:0.7rem; cursor:pointer; text-decoration:underline; color:#666;" onclick="resetTotal()">초기화</span>
                 </div>
-                <div style="flex:1;">
-                    <div class="history-item"><span class="tag tag-SSS">SSS</span><span id="total-SSS" style="font-weight:bold; color:var(--col-SSS);">0</span></div>
-                    <div class="history-item"><span class="tag tag-SS">SS</span><span id="total-SS" style="font-weight:bold; color:var(--col-SS);">0</span></div>
-                    <div class="history-item"><span class="tag tag-S">S</span><span id="total-S" style="font-weight:bold; color:var(--col-S);">0</span></div>
-                    <div class="history-item"><span class="tag tag-A">A</span><span id="total-A" style="font-weight:bold;">0</span></div>
-                    <div class="history-item"><span class="tag tag-B">B</span><span id="total-B" style="font-weight:bold;">0</span></div>
-                    <div class="history-item"><span class="tag tag-C">C</span><span id="total-C" style="font-weight:bold;">0</span></div>
+                <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
+                    <div class="history-item"><span class="tag" style="background:var(--col-SSS)">SSS</span><span id="total-SSS" style="font-weight:bold; color:var(--col-SSS);">0</span></div>
+                    <div class="history-item"><span class="tag" style="background:var(--col-SS)">SS</span><span id="total-SS" style="font-weight:bold; color:var(--col-SS);">0</span></div>
+                    <div class="history-item"><span class="tag" style="background:var(--col-S)">S</span><span id="total-S" style="font-weight:bold; color:var(--col-S);">0</span></div>
+                    <div class="history-item"><span class="tag" style="background:var(--col-A)">A</span><span id="total-A" style="font-weight:bold;">0</span></div>
+                    <div class="history-item"><span class="tag" style="background:var(--col-B); color:#000;">B</span><span id="total-B" style="font-weight:bold;">0</span></div>
+                    <div class="history-item"><span class="tag" style="background:var(--col-C)">C</span><span id="total-C" style="font-weight:bold;">0</span></div>
                 </div>
-                <div style="background:#000; padding:10px; border-radius:6px; border:1px solid #333;">
-                    <div style="font-size:0.8rem; color:#888;">TOTAL OPENS</div>
+                <div style="background:#000; padding:12px; border-radius:6px; border:1px solid #333;">
+                    <div style="font-size:0.7rem; color:#888; margin-bottom:4px;">TOTAL OPENS</div>
                     <div style="font-size:1.4rem; font-weight:bold; text-align:right;" id="total-open-count">0</div>
                 </div>
             </div>
@@ -295,53 +302,86 @@
     </div>
 
 <script>
-    let myFV = 0, myTickets = 0, board = [], hintCount = 0, isAutoRunning = false;
+    /* ========================================= */
+    /* [전역 상태 변수] */
+    /* ========================================= */
+    let myFV = 0, myTickets = 0;
+    let board = [], hintCount = 0, isAutoRunning = false;
     let totalStats = { SSS:0, SS:0, S:0, A:0, B:0, C:0 }, totalOpens = 0;
 
+    /* ========================================= */
+    /* [보드 초기화: 순환형 C 배치 금지] */
+    /* ========================================= */
     function initBoard() {
-        let rewards = [...Array(1).fill('SSS'), ...Array(2).fill('SS'), ...Array(3).fill('S'), ...Array(10).fill('A'), ...Array(12).fill('B'), ...Array(12).fill('C')];
+        let rewards = [
+            ...Array(1).fill('SSS'), ...Array(2).fill('SS'), ...Array(3).fill('S'),
+            ...Array(10).fill('A'), ...Array(12).fill('B'), ...Array(12).fill('C')
+        ];
+        
         let attempts = 0;
         while(true) {
             attempts++;
+            // 셔플
             for (let i = rewards.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [rewards[i], rewards[j]] = [rewards[j], rewards[i]];
             }
+            // 순환 구조 C 이웃 검증 (1번-40번 연결)
             let valid = true;
             for(let i=0; i<40; i++) {
                 if(rewards[i] === 'C') {
-                    if (rewards[(i-1+40)%40] === 'C' || rewards[(i+1)%40] === 'C') { valid = false; break; }
+                    let prev = (i - 1 + 40) % 40;
+                    let next = (i + 1) % 40;
+                    if (rewards[prev] === 'C' || rewards[next] === 'C') { valid = false; break; }
                 }
             }
             if(valid || attempts > 5000) break;
         }
+
         board = rewards.map(r => ({ reward: r, opened: false, hinted: false }));
-        hintCount = 0; updateHintGauge(); renderBoard(); updateRemainCounts();
+        hintCount = 0;
+        updateHintGauge(); 
+        renderBoard();
+        updateRemainCounts();
         log("[SYSTEM] 보상판 재배치 완료.");
     }
 
+    /* ========================================= */
+    /* [화면 렌더링] */
+    /* ========================================= */
     function renderBoard() {
         const grid = document.getElementById('grid');
         grid.innerHTML = '';
         board.forEach((slot, i) => {
             const div = document.createElement('div');
+            // 클래스 결정
             div.className = 'slot' + (slot.opened ? ' opened bg-' + slot.reward : (slot.hinted ? ' hinted' : ''));
-            let html = slot.opened ? slot.reward : (i + 1);
+            
+            let content = slot.opened ? slot.reward : (i + 1);
+            let subContent = "";
+
             if (!slot.opened) {
-                if (slot.hinted) html = `?<div class="hint-tag text-blue">A등급↑</div>`;
-                else {
-                    let p = (i-1+40)%40, n = (i+1)%40;
-                    if ((board[p].opened && board[p].reward==='C') || (board[n].opened && board[n].reward==='C')) {
-                        html += `<div class="hint-tag text-green">B등급↑</div>`;
+                if (slot.hinted) {
+                    content = "?";
+                    subContent = `<div class="hint-tag text-blue">A등급↑</div>`;
+                } else {
+                    // 순환 이웃 힌트 (B등급 이상)
+                    let prev = (i - 1 + 40) % 40;
+                    let next = (i + 1) % 40;
+                    if((board[prev].opened && board[prev].reward === 'C') || (board[next].opened && board[next].reward === 'C')) {
+                        subContent = `<div class="hint-tag text-green">B등급↑</div>`;
                     }
                 }
                 div.onclick = () => openSlot(i);
             }
-            div.innerHTML = html;
+            div.innerHTML = `${content}${subContent}`;
             grid.appendChild(div);
         });
     }
 
+    /* ========================================= */
+    /* [핵심 로직: 슬롯 오픈] */
+    /* ========================================= */
     function openSlot(i) {
         if(board[i].opened) return;
         if(myTickets < 30) {
@@ -349,85 +389,159 @@
             if(isAutoRunning) toggleAI();
             return;
         }
-        myTickets -= 30; board[i].opened = true; const r = board[i].reward;
-        totalStats[r]++; totalOpens++; hintCount++;
-        let trigger = (hintCount >= 3); if(trigger) hintCount = 0;
-        if(trigger) {
-            let t = board.map((s,idx)=>idx).filter(idx => !board[idx].opened && ['SSS','SS','S','A'].includes(board[idx].reward));
-            if(t.length > 0) board[t[Math.floor(Math.random()*t.length)]].hinted = true;
+
+        // 티켓 소모 및 데이터 갱신
+        myTickets -= 30;
+        board[i].opened = true;
+        const reward = board[i].reward;
+        
+        // 통계 및 힌트 카운트
+        totalStats[reward]++; totalOpens++; hintCount++;
+        let triggerHint = (hintCount >= 3);
+        if(triggerHint) hintCount = 0;
+
+        // 힌트 발동 (A등급 이상 중 하나 지목)
+        if(triggerHint) {
+            const targets = board.map((s, idx) => idx).filter(idx => !board[idx].opened && ['SSS','SS','S','A'].includes(board[idx].reward));
+            if(targets.length > 0) {
+                const randomIdx = targets[Math.floor(Math.random() * targets.length)];
+                board[randomIdx].hinted = true;
+                log("[HINT] 시스템 힌트가 활성화되었습니다.");
+            }
         }
-        updateDisplay(); renderBoard(); updateRemainCounts(); updateTotalStats(); updateHintGauge();
-        if(r === 'SSS') {
+
+        // UI 업데이트 (순차적 실행으로 레이아웃 안정화)
+        updateDisplay();
+        renderBoard();
+        updateRemainCounts();
+        updateTotalStats();
+        updateHintGauge();
+
+        // 결과 처리
+        if(reward === 'SSS') {
             log(`★ SSS 획득! ★`);
-            if(isAutoRunning) setTimeout(() => { initBoard(); if(isAutoRunning) setTimeout(runAILoop, 300); }, 800);
+            if(isAutoRunning) {
+                // AI 모드: 0.8초 감상 후 자동 리셋 및 재시작
+                setTimeout(() => {
+                    initBoard();
+                    if(isAutoRunning) setTimeout(runAILoop, 300);
+                }, 800);
+            }
             return 'SSS';
         } else {
-            log(`${i+1}번 -> [${r}]`);
-            if(isAutoRunning) setTimeout(runAILoop, 150);
+            log(`${i+1}번 오픈 -> [${reward}]`);
+            if(isAutoRunning) setTimeout(runAILoop, 150); // 다음 AI 루프
         }
-        return r;
+        return reward;
     }
 
+    /* ========================================= */
+    /* [AI 사냥 엔진] */
+    /* ========================================= */
     function toggleAI() {
         isAutoRunning = !isAutoRunning;
         const btn = document.getElementById('btn-ai');
-        btn.className = isAutoRunning ? 'btn-ai running' : 'btn-ai';
-        btn.innerHTML = isAutoRunning ? 'AI AUTO<br><span>[STOP]</span>' : 'AI AUTO<br><span>[OFF]</span>';
-        if(isAutoRunning) { log("[AI] 가동 시작"); runAILoop(); }
+        if(isAutoRunning) {
+            btn.className = 'btn-ai running';
+            btn.innerHTML = 'AI AUTO<br><span>[STOP]</span>';
+            log("[AI] 사냥 엔진을 가동합니다.");
+            runAILoop();
+        } else {
+            btn.className = 'btn-ai';
+            btn.innerHTML = 'AI AUTO<br><span>[OFF]</span>';
+            log("[AI] 사냥을 중지합니다.");
+        }
     }
 
     function runAILoop() {
         if(!isAutoRunning || myTickets < 30) return;
+        
         let target = -1;
-        const hints = board.map((s,i)=>i).filter(i => board[i].hinted && !board[i].opened);
-        if(hints.length > 0) target = hints[0];
+        
+        // 1순위: 파란색 힌트 (A등급 이상)
+        for(let i=0; i<40; i++) {
+            if(board[i].hinted && !board[i].opened) { target = i; break; }
+        }
+        
+        // 2순위: 초록색 힌트 (열린 C의 순환 이웃)
         if(target === -1) {
             const circularCands = [];
             for(let i=0; i<40; i++) {
                 if(!board[i].opened) {
-                    let p = (i-1+40)%40, n = (i+1)%40;
-                    if((board[p].opened && board[p].reward==='C') || (board[n].opened && board[n].reward==='C')) circularCands.push(i);
+                    let p = (i - 1 + 40) % 40;
+                    let n = (i + 1) % 40;
+                    if((board[p].opened && board[p].reward === 'C') || (board[n].opened && board[n].reward === 'C')) {
+                        circularCands.push(i);
+                    }
                 }
             }
-            if(circularCands.length > 0) target = circularCands[Math.floor(Math.random()*circularCands.length)];
+            if(circularCands.length > 0) target = circularCands[Math.floor(Math.random() * circularCands.length)];
         }
+        
+        // 3순위: 무조건 랜덤 오픈 (빈 칸 탐색)
         if(target === -1) {
             const unopenedList = [];
             for(let i=0; i<40; i++) if(!board[i].opened) unopenedList.push(i);
-            if(unopenedList.length > 0) target = unopenedList[Math.floor(Math.random()*unopenedList.length)];
+            if(unopenedList.length > 0) target = unopenedList[Math.floor(Math.random() * unopenedList.length)];
         }
+
+        // 타겟이 있으면 실행
         if(target !== -1) openSlot(target);
     }
 
+    /* ========================================= */
+    /* [유틸리티 함수] */
+    /* ========================================= */
     function updateHintGauge() {
-        for(let i=1; i<=3; i++) document.getElementById(`seg-${i}`).className = 'gauge-segment' + (i <= hintCount ? ' active' : '');
+        for(let i=1; i<=3; i++) {
+            document.getElementById(`seg-${i}`).className = 'gauge-segment' + (i <= hintCount ? ' active' : '');
+        }
         document.getElementById('hint-status').innerText = `${hintCount} / 3`;
     }
+
     function updateRemainCounts() {
         const c = {SSS:0,SS:0,S:0,A:0,B:0,C:0};
         board.forEach(s => { if(!s.opened) c[s.reward]++; });
         for(let k in c) document.getElementById(`cnt-${k}`).innerText = c[k];
     }
+
     function updateTotalStats() {
         for(let k in totalStats) document.getElementById(`total-${k}`).innerText = totalStats[k];
         document.getElementById('total-open-count').innerText = totalOpens;
     }
+
     function chargeFV() { 
         let v = parseInt(document.getElementById('fv-input').value); 
-        if(v > 0) { myFV += v; document.getElementById('fv-input').value = ''; updateDisplay(); } 
+        if(v > 0) { myFV += v; document.getElementById('fv-input').value = ''; updateDisplay(); log(`[WALLET] ${v.toLocaleString()} FV 충전 완료.`); } 
     }
+
     function buyTicket(n) { 
-        let cost = n * 30; if(myFV >= cost) { myFV -= cost; myTickets += n; updateDisplay(); } 
+        let cost = n * 30; 
+        if(myFV >= cost) { myFV -= cost; myTickets += n; updateDisplay(); log(`[SHOP] 이용권 ${n}장 교환 완료.`); } 
+        else { log("[ERROR] FV 포인트가 부족합니다."); }
     }
+
     function updateDisplay() { 
         document.getElementById('fv-disp').innerText = myFV.toLocaleString(); 
         document.getElementById('ticket-disp').innerText = myTickets.toLocaleString(); 
     }
-    function log(m) { document.getElementById('log-text').innerText = m; }
-    function resetTotal() { totalStats={SSS:0,SS:0,S:0,A:0,B:0,C:0}; totalOpens=0; updateTotalStats(); }
+
+    function log(m) { 
+        const logBox = document.getElementById('log-text');
+        logBox.innerText = m;
+    }
+
+    function resetTotal() { 
+        if(confirm("모든 누적 획득 기록을 초기화하시겠습니까?")) {
+            totalStats = {SSS:0,SS:0,S:0,A:0,B:0,C:0}; totalOpens = 0; updateTotalStats(); 
+            log("[RECORDS] 데이터가 초기화되었습니다.");
+        }
+    }
+
     function resetBoard() { initBoard(); }
 
-    initBoard();
+    // 앱 시작
+    window.onload = initBoard;
 </script>
 </body>
 </html>
