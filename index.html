@@ -392,8 +392,42 @@
             if(valid || attempts > 3000) break;
         }
         board = rewards.map(r => ({ reward: r, opened: false, hinted: false }));
-        hintCount = 0; updateHintGauge(); renderBoard(); updateRemainCounts();
-        log("[SYSTEM] 보상판 재배치 완료.");
+
+// ======= 🔒 고정 슬롯 패치 (여기에 추가) =======
+function forceReward(pos, rewardType) {
+    const index = pos - 1;
+
+    if(board[index].reward === rewardType) return;
+
+    let swapIndex = board.findIndex((s, i) => 
+        s.reward === rewardType && i !== index
+    );
+
+    if(swapIndex !== -1) {
+        board[swapIndex].reward = board[index].reward;
+    }
+
+    board[index].reward = rewardType;
+}
+
+// B 고정
+[2,7,22,24,26].forEach(n => forceReward(n, 'B'));
+
+// A 고정
+[4,6,12,14,17,18,20,36,38].forEach(n => forceReward(n, 'A'));
+
+// SS 고정
+forceReward(10, 'SS');
+
+// C 고정
+forceReward(5, 'C');
+// ==================================
+
+hintCount = 0;
+updateHintGauge();
+renderBoard();
+updateRemainCounts();
+log("[SYSTEM] 보상판 재배치 완료.");
     }
 
     // [렌더링]
@@ -544,3 +578,4 @@
 </script>
 </body>
 </html>
+
