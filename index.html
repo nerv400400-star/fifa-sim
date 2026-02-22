@@ -393,43 +393,43 @@
         }
         board = rewards.map(r => ({ reward: r, opened: false, hinted: false }));
         // ======= 🔒 고정 슬롯 패치 (여기에 추가) =======
-function forceReward(pos, rewardType) {
-    const index = pos - 1;
+    function forceReward(pos, rewardType) {
+        const index = pos - 1;
 
     // 이미 원하는 값이면 잠그고 종료
-    if (board[index].reward === rewardType) {
+        if (board[index].reward === rewardType) {
         locked.add(index);
         return;
     }
 
     // 아직 잠기지 않은 자리 중에서 교환 대상 찾기
-    let swapIndex = board.findIndex((s, i) =>
-        s.reward === rewardType &&
-        i !== index &&
-        !locked.has(i)
-    );
+        let swapIndex = board.findIndex((s, i) =>
+            s.reward === rewardType &&
+            i !== index &&
+            !locked.has(i)
+        );
 
-    if (swapIndex !== -1) {
-        board[swapIndex].reward = board[index].reward;
-    }
+        if (swapIndex !== -1) {
+            board[swapIndex].reward = board[index].reward;
+        }
 
-    board[index].reward = rewardType;
+        board[index].reward = rewardType;
 
     // 이 자리는 이제 고정
-    locked.add(index);
-}
+        locked.add(index);
+    }
 
 // B 고정
-    [2,7,22,24,26].forEach(n => forceReward(n, 'B'));
+        [2,7,22,24,26].forEach(n => forceReward(n, 'B'));
 
 // A 고정
-    [4,6,12,14,17,18,20,36,38].forEach(n => forceReward(n, 'A'));
+        [4,6,12,14,17,18,20,36,38].forEach(n => forceReward(n, 'A'));
 
 // SS 고정
-    forceReward(10, 'SS');
+        forceReward(10, 'SS');
 
 // C 고정
-    forceReward(5, 'C');
+        forceReward(5, 'C');
 // ==================================
 
     hintCount = 0;
@@ -588,6 +588,7 @@ function forceReward(pos, rewardType) {
 </script>
 </body>
 </html>
+
 
 
 
