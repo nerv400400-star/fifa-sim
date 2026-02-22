@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>Reward Board Stable Version</title>
+<title>Reward Board Final Stable</title>
 <style>
     body {
         background:#111;
@@ -31,14 +31,12 @@
         border-radius:8px;
         font-weight:bold;
         font-size:16px;
-        cursor:pointer;
         user-select:none;
-        transition:0.2s;
     }
 
-    .a { background:#3498db; }
-    .b { background:#e67e22; }
-    .c { background:#9b59b6; }
+    .A { background:#3498db; }
+    .B { background:#e67e22; }
+    .C { background:#9b59b6; }
     .s { background:#2ecc71; }
     .ss { background:#e74c3c; }
     .sss { background:#f1c40f; color:black; }
@@ -55,167 +53,104 @@
 </head>
 <body>
 
-<h1>Reward Board (완전 안정 버전)</h1>
+<h1>Reward Board (완전 고정 + 개수 유지)</h1>
 <button onclick="init()">리셋</button>
 
 <div id="board"></div>
 
 <script>
 
-//////////////////////////////////////////////////////
-// 기본 설정
-//////////////////////////////////////////////////////
-
 const TOTAL_CELLS = 40;
 
+// 최종 개수
 const rewardCounts = {
     sss: 1,
     ss: 2,
     s: 1,
-    a: 12,
-    b: 12,
-    c: 12
+    A: 12,
+    B: 12,
+    C: 12
 };
 
-//////////////////////////////////////////////////////
-// 고정 위치 (필요하면 수정 가능)
-//////////////////////////////////////////////////////
-
+// 고정 위치
 const fixedMap = {
-    5: 'sss',
-    10: 'ss',
-    15: 'ss',
-    20: 's'
-};
+    2: 'B',
+    7: 'B',
+    22: 'B',
+    24: 'B',
+    26: 'B',
 
-//////////////////////////////////////////////////////
-// 보드 배열
-//////////////////////////////////////////////////////
+    4: 'A',
+    6: 'A',
+    12: 'A',
+    14: 'A',
+    17: 'A',
+    18: 'A',
+    20: 'A',
+    36: 'A',
+    38: 'A',
+
+    10: 'ss',
+    5: 'C'
+};
 
 let board = [];
 
-//////////////////////////////////////////////////////
-// 초기화
-//////////////////////////////////////////////////////
-
-function init() {
-    createEmptyBoard();
-    fillRandomRewards();
-    applyFixedRewards();
+function init(){
+    createBoard();
     renderBoard();
 }
 
-//////////////////////////////////////////////////////
-// 빈 보드 생성
-//////////////////////////////////////////////////////
+function createBoard(){
 
-function createEmptyBoard() {
-    board = [];
-    for(let i=1;i<=TOTAL_CELLS;i++){
-        board.push({
-            pos:i,
-            reward:null
-        });
+    board = new Array(TOTAL_CELLS).fill(null);
+
+    let countsLeft = {...rewardCounts};
+
+    // 1️⃣ 고정 먼저 배치
+    for(let pos in fixedMap){
+        let type = fixedMap[pos];
+        board[pos-1] = type;
+        countsLeft[type]--;
     }
-}
 
-//////////////////////////////////////////////////////
-// 랜덤 채우기 (개수 절대 고정)
-//////////////////////////////////////////////////////
-
-function fillRandomRewards() {
-
+    // 2️⃣ 남은 보상 풀 만들기
     let pool = [];
-
-    for(let key in rewardCounts){
-        for(let i=0;i<rewardCounts[key];i++){
+    for(let key in countsLeft){
+        for(let i=0;i<countsLeft[key];i++){
             pool.push(key);
         }
     }
 
     shuffle(pool);
 
+    // 3️⃣ 빈 칸 채우기
+    let poolIndex = 0;
     for(let i=0;i<TOTAL_CELLS;i++){
-        board[i].reward = pool[i];
-    }
-}
-
-//////////////////////////////////////////////////////
-// 고정 적용 (개수 안 깨짐)
-//////////////////////////////////////////////////////
-
-function applyFixedRewards() {
-
-    for(let pos in fixedMap){
-
-        let index = pos - 1;
-        let type = fixedMap[pos];
-
-        if(board[index].reward === type) continue;
-
-        let swapIndex = findSwappableIndex(type);
-
-        if(swapIndex !== -1){
-            board[swapIndex].reward = board[index].reward;
-        }
-
-        board[index].reward = type;
-    }
-}
-
-//////////////////////////////////////////////////////
-// 교환 가능한 인덱스 찾기
-//////////////////////////////////////////////////////
-
-function findSwappableIndex(type){
-
-    for(let i=0;i<TOTAL_CELLS;i++){
-
-        let pos = i + 1;
-
-        if(fixedMap[pos]) continue;
-
-        if(board[i].reward === type){
-            return i;
+        if(board[i] === null){
+            board[i] = pool[poolIndex++];
         }
     }
-
-    return -1;
 }
 
-//////////////////////////////////////////////////////
-// 셔플
-//////////////////////////////////////////////////////
-
-function shuffle(array) {
+function shuffle(array){
     for(let i=array.length-1;i>0;i--){
-        let j = Math.floor(Math.random()*(i+1));
+        let j=Math.floor(Math.random()*(i+1));
         [array[i],array[j]]=[array[j],array[i]];
     }
 }
 
-//////////////////////////////////////////////////////
-// 출력
-//////////////////////////////////////////////////////
-
 function renderBoard(){
-
     const container = document.getElementById("board");
-    container.innerHTML = "";
+    container.innerHTML="";
 
-    board.forEach(cell => {
-
-        let div = document.createElement("div");
-        div.className = "cell " + cell.reward;
-        div.innerText = cell.reward + " (" + cell.pos + ")";
-
+    board.forEach((reward,index)=>{
+        let div=document.createElement("div");
+        div.className="cell "+reward;
+        div.innerText=reward+" ("+(index+1)+")";
         container.appendChild(div);
     });
 }
-
-//////////////////////////////////////////////////////
-// 시작
-//////////////////////////////////////////////////////
 
 init();
 
