@@ -1,591 +1,238 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>REPAIR MASTER - PERFECT FIX v5.1</title>
-    <style>
-        /* ========================================= */
-        /* [1. CSS 테마 및 등급별 색상] */
-        /* ========================================= */
-        :root {
-            --bg-body: #050505;
-            --bg-panel: #161616;
-            --border-panel: #333;
-            --accent-yellow: #ffca28; 
-            --accent-red: #d32f2f;
-            --text-white: #fff;
-            
-            /* 등급 색상 */
-            --col-SSS: #e040fb; 
-            --col-SS: #ff6d00;  
-            --col-S: #ff1744;   
-            --col-A: #2979ff;   
-            --col-B: #00e676;   
-            --col-C: #616161;   
-        }
+<meta charset="UTF-8">
+<title>Reward Board Stable Version</title>
+<style>
+    body {
+        background:#111;
+        color:white;
+        font-family:Arial, Helvetica, sans-serif;
+        text-align:center;
+    }
 
-        * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; outline: none; }
-        
-        body {
-            background-color: var(--bg-body);
-            color: var(--text-white);
-            font-family: 'Pretendard', -apple-system, sans-serif;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden; /* 스크롤 방지 */
-        }
+    h1 {
+        margin-top:20px;
+    }
 
-        /* ========================================= */
-        /* [2. 상단 헤더] */
-        /* ========================================= */
-        .header {
-            height: 60px; /* 헤더 높이 축소 */
-            background: #000;
-            border-bottom: 3px solid var(--accent-red);
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            justify-content: space-between;
-            flex-shrink: 0;
-            z-index: 100;
-        }
-        .header-title {
-            font-family: 'Impact', sans-serif;
-            font-size: 1.8rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            text-shadow: 2px 2px 0 #d32f2f;
-        }
-        .header-badge {
-            background: #333;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 0.75rem;
-            border: 1px solid #555;
-        }
+    #board {
+        width:600px;
+        margin:30px auto;
+        display:grid;
+        grid-template-columns:repeat(8,1fr);
+        gap:8px;
+    }
 
-        /* ========================================= */
-        /* [3. 메인 컨테이너] */
-        /* ========================================= */
-        .main-container {
-            flex: 1;
-            display: flex;
-            padding: 20px;
-            gap: 20px;
-            justify-content: center;
-            overflow-y: auto; /* 내부 스크롤 */
-            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
-        }
+    .cell {
+        height:60px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border-radius:8px;
+        font-weight:bold;
+        font-size:18px;
+        cursor:pointer;
+        user-select:none;
+        transition:0.2s;
+    }
 
-        /* 패널 공통 */
-        .panel {
-            background: var(--bg-panel);
-            border: 2px solid var(--border-panel);
-            border-radius: 8px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-        .panel-header {
-            font-size: 0.95rem;
-            font-weight: bold;
-            color: #ccc;
-            border-left: 4px solid var(--accent-red);
-            padding-left: 10px;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
+    .A { background:#3498db; }
+    .B { background:#e67e22; }
+    .C { background:#9b59b6; }
+    .SS { background:#e74c3c; }
 
-        /* [좌측 패널] */
-        .left-col { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
-        .asset-box {
-            background: #000; border: 1px solid #333; border-radius: 6px; padding: 10px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .asset-val { font-size: 1.2rem; font-weight: 900; }
-        .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .shop-btn {
-            background: #222; border: 1px solid #444; padding: 10px 5px;
-            display: flex; flex-direction: column; align-items: center; gap: 3px;
-            cursor: pointer; border-radius: 6px; transition: background 0.1s;
-        }
-        .shop-btn:active { background: #333; border-color: var(--accent-yellow); }
-        .input-dark {
-            width: 100%; background: #000; border: 1px solid #444; color: white;
-            padding: 8px; font-size: 0.9rem; text-align: center; border-radius: 6px; font-weight: bold;
-        }
-        .btn-act {
-            width: 100%; background: #444; color: white; border: none; padding: 10px;
-            font-weight: bold; cursor: pointer; border-radius: 6px; margin-top: 5px;
-        }
-
-        /* [중앙 패널: 게임 영역] */
-        .center-col { flex: 1; max-width: 800px; min-width: 600px; display: flex; flex-direction: column; gap: 15px; }
-        
-        /* 힌트 대시보드 - 높이 고정 */
-        .hint-dashboard {
-            height: 50px; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: space-between;
-            background: #000; border: 2px solid #444; border-radius: 8px; padding: 0 15px;
-        }
-        .gauge-track {
-            flex: 1; height: 12px; background: #222; border-radius: 6px; margin: 0 15px;
-            display: flex; overflow: hidden; border: 1px solid #444;
-        }
-        .gauge-segment { flex: 1; border-right: 1px solid #000; background: #333; transition: background 0.2s; }
-        .gauge-segment.active { background: #40c4ff; box-shadow: 0 0 10px #40c4ff; }
-
-        /* 게임 프레임 */
-        .game-frame {
-            flex: 1; display: flex; gap: 15px;
-            background: #1a1a1a; border: 2px solid #444; border-radius: 10px; padding: 15px;
-            min-height: 300px; /* 최소 높이 확보 */
-        }
-
-        /* 그리드 컨테이너 */
-        .grid-container { 
-            display: grid; 
-            grid-template-columns: repeat(8, 1fr); 
-            gap: 5px; 
-            flex: 1; 
-            align-content: start; /* 위쪽 정렬 */
-        }
-        
-        /* 슬롯 (숫자판) 디자인 - 크기 고정의 핵심 */
-        .slot {
-            aspect-ratio: 1/1;
-            background: #252525; 
-            border: 2px solid #3c3c3c; 
-            border-radius: 6px;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            cursor: pointer; position: relative;
-            font-family: 'Impact', sans-serif; 
-            font-size: 1.6rem; 
-            color: #666;
-            overflow: hidden; /* 내부 컨텐츠가 커져도 밖으로 밀지 않음 */
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
-        }
-        .slot:active { background: #333; }
-
-        /* 힌트 상태 */
-        .slot.hinted { border-color: #40c4ff; color: #40c4ff; background: rgba(64, 196, 255, 0.08); }
-        
-        /* 오픈 상태 */
-        .slot.opened { cursor: default; border: 2px solid transparent !important; color: white; font-family: 'Pretendard', sans-serif; font-weight: 900; }
-        
-        /* 등급별 스타일 - 테두리 두께 및 그림자 통일 */
-        .bg-SSS { 
-            background: var(--col-SSS) !important; 
-            border: 2px solid #fff !important; 
-            box-shadow: inset 0 0 10px rgba(255,255,255,0.5) !important; /* 내부 발광으로 변경 (화면밀림 방지) */
-            font-size: 1.5rem !important; 
-            color: #fff !important;
-        }
-        .bg-SS  { background: var(--col-SS) !important; font-size: 1.5rem !important; }
-        .bg-S   { background: var(--col-S) !important; font-size: 1.5rem !important; }
-        .bg-A   { background: var(--col-A) !important; font-size: 1.5rem !important; }
-        .bg-B   { background: var(--col-B) !important; color: #000 !important; font-size: 1.5rem !important; }
-        .bg-C   { background: var(--col-C) !important; color: #aaa !important; font-size: 1.4rem !important; }
-
-        /* 힌트 텍스트 */
-        .hint-tag { 
-            position: absolute; bottom: 2px; width: 100%; text-align: center; 
-            font-size: 0.6rem; line-height: 1; font-family: 'Pretendard', sans-serif; font-weight: bold; 
-            pointer-events: none;
-        }
-        .text-green { color: #00e676; text-shadow: 0 0 2px black; }
-        .text-blue { color: #40c4ff; text-shadow: 0 0 2px black; }
-
-        /* 사이드 컨트롤 */
-        .side-controls { width: 180px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
-        .remain-box { background: #000; border: 1px solid #444; padding: 10px; border-radius: 6px; }
-        .remain-row { display: flex; justify-content: space-between; margin-bottom: 4px; font-weight: bold; font-size: 0.9rem; border-bottom: 1px solid #222; }
-        .tag { padding: 1px 0; width: 40px; text-align: center; border-radius: 3px; font-size: 0.75rem; color: white; margin-right: 5px; }
-        
-        .tag-SSS { background: var(--col-SSS); } .tag-SS { background: var(--col-SS); }
-        .tag-S { background: var(--col-S); } .tag-A { background: var(--col-A); }
-        .tag-B { background: var(--col-B); color: black; } .tag-C { background: var(--col-C); }
-
-        .btn-ai {
-            width: 100%; background: #333; color: #888; font-weight: 900; font-size: 1.1rem;
-            padding: 15px 0; border: 2px solid #555; border-radius: 8px; cursor: pointer; transition: 0.2s;
-        }
-        .btn-ai.running {
-            background: var(--accent-yellow); color: black; border-color: var(--accent-yellow);
-            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.3); /* 내부 발광 */
-        }
-        .btn-reset {
-            width: 100%; background: #333; color: white; padding: 12px; font-weight: bold;
-            border: 1px solid #555; border-radius: 8px; cursor: pointer; margin-top: auto;
-        }
-
-        /* [우측 패널] */
-        .right-col { width: 240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
-        .history-item {
-            background: #121212; padding: 8px 12px; border-radius: 6px; border: 1px solid #333;
-            display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;
-        }
-        .hist-val { font-weight: bold; font-size: 1rem; }
-        
-        .log-area { 
-            height: 40px; flex-shrink: 0; background: #111; padding: 0 15px; 
-            font-family: monospace; font-size: 0.8rem; color: #00e676; 
-            border-top: 2px solid #333; line-height: 40px; white-space: nowrap; overflow: hidden; 
-        }
-
-        /* ========================================= */
-        /* [4. 모바일 최적화 (초과 방지)] */
-        /* ========================================= */
-        @media (max-width: 1100px) {
-            body { height: auto; overflow-y: auto; }
-            .header { padding: 0 15px; } 
-            .header-title { font-size: 1.5rem; }
-            
-            .main-container { 
-                flex-direction: column; padding: 10px; gap: 10px; 
-            }
-
-            /* 순서 변경 */
-            .center-col { order: 1; width: 100%; min-width: 0; max-width: none; }
-            .left-col { order: 2; width: 100%; }
-            .right-col { order: 3; width: 100%; }
-
-            /* 게임 프레임: 컨트롤 하단 배치 */
-            .game-frame { 
-                flex-direction: column-reverse; /* 그리드가 위, 컨트롤이 아래 */
-                padding: 10px; gap: 10px;
-            }
-            
-            /* 모바일 그리드 갭 축소 및 폰트 축소 (화면 초과 방지 핵심) */
-            .grid-container { gap: 3px; }
-            .slot { font-size: 1.2rem; border-width: 1px; border-radius: 4px; }
-            .bg-SSS, .bg-SS, .bg-S, .bg-A, .bg-B, .bg-C { font-size: 1.1rem !important; border-width: 1px !important; }
-            
-            /* 컨트롤 가로 배치 */
-            .side-controls { width: 100%; flex-direction: row; flex-wrap: wrap; gap: 5px; }
-            .remain-box { 
-                width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 5px;
-            }
-            .remain-row { justify-content: center; gap: 5px; border: 1px solid #222; padding: 2px; }
-            
-            .side-controls > div:nth-child(2) { flex: 2; } /* AI 버튼 */
-            .btn-reset { flex: 1; margin-top: 0; padding: 0; }
-            
-            .shop-grid { grid-template-columns: repeat(4, 1fr); }
-        }
-    </style>
+    button {
+        margin:20px;
+        padding:10px 20px;
+        font-size:16px;
+        border:none;
+        border-radius:6px;
+        cursor:pointer;
+    }
+</style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="header-title">REPAIR MASTER</div>
-        <div class="header-badge">v5.1 FIX</div>
-    </div>
+<h1>Reward Board (완전 안정 버전)</h1>
+<button onclick="init()">리셋</button>
 
-    <div class="main-container">
-        <!-- [LEFT] -->
-        <div class="left-col">
-            <div class="panel">
-                <div class="panel-header">WALLET</div>
-                <div class="asset-box">
-                    <span style="color:#888; font-weight:bold; font-size:0.8rem;">FV POINT</span>
-                    <span class="asset-val" style="color:var(--col-S);" id="fv-disp">0</span>
-                </div>
-                <div class="asset-box" style="border-color:var(--accent-yellow);">
-                    <span style="color:var(--accent-yellow); font-weight:bold; font-size:0.8rem;">TICKETS</span>
-                    <span class="asset-val" style="color:var(--accent-yellow);" id="ticket-disp">0</span>
-                </div>
-                <input type="number" id="fv-input" class="input-dark" placeholder="충전액">
-                <button class="btn-act" onclick="chargeFV()">충전하기</button>
-            </div>
-            <div class="panel">
-                <div class="panel-header">SHOP</div>
-                <div class="shop-grid">
-                    <div class="shop-btn" onclick="buyTicket(1)"><strong>1장</strong><span style="font-size:0.7rem; color:#888;">30FV</span></div>
-                    <div class="shop-btn" onclick="buyTicket(10)"><strong>10장</strong><span style="font-size:0.7rem; color:#888;">300FV</span></div>
-                    <div class="shop-btn" onclick="buyTicket(100)"><strong>100장</strong><span style="font-size:0.7rem; color:#888;">3,000FV</span></div>
-                    <div class="shop-btn" onclick="buyTicket(1000)" style="border-color:var(--col-A);"><strong style="color:var(--col-A);">1,000장</strong><span style="font-size:0.7rem; color:#888;">30,000</span></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- [CENTER] -->
-        <div class="center-col">
-            <div class="hint-dashboard">
-                <div style="color:#40c4ff; font-weight:bold;">⚡ HINT GAUGE</div>
-                <div class="gauge-track">
-                    <div class="gauge-segment" id="seg-1"></div>
-                    <div class="gauge-segment" id="seg-2"></div>
-                    <div class="gauge-segment" id="seg-3"></div>
-                </div>
-                <div id="hint-status" style="font-weight:bold; color:#888; width:40px; text-align:right;">0/3</div>
-            </div>
-
-            <div class="game-frame">
-                <div class="side-controls">
-                    <div class="remain-box">
-                        <div class="remain-row"><span class="tag tag-SSS">SSS</span> <span id="cnt-SSS">0</span></div>
-                        <div class="remain-row"><span class="tag tag-SS">SS</span> <span id="cnt-SS">0</span></div>
-                        <div class="remain-row"><span class="tag tag-S">S</span> <span id="cnt-S">0</span></div>
-                        <div class="remain-row"><span class="tag tag-A">A</span> <span id="cnt-A">0</span></div>
-                        <div class="remain-row"><span class="tag tag-B">B</span> <span id="cnt-B">0</span></div>
-                        <div class="remain-row"><span class="tag tag-C">C</span> <span id="cnt-C">0</span></div>
-                    </div>
-                    <div>
-                        <button class="btn-ai" id="btn-ai" onclick="toggleAI()">AI AUTO<br><span style="font-size:0.7rem;">[OFF]</span></button>
-                    </div>
-                    <button class="btn-reset" onclick="resetBoard()">판 초기화</button>
-                </div>
-                <div class="grid-container" id="grid"></div>
-            </div>
-            <div class="log-area" id="log-text">[SYSTEM] READY.</div>
-        </div>
-
-        <!-- [RIGHT] -->
-        <div class="right-col">
-            <div class="panel" style="height:100%;">
-                <div class="panel-header" style="display:flex; justify-content:space-between;">
-                    <span>RECORDS</span>
-                    <span style="font-size:0.7rem; text-decoration:underline; cursor:pointer;" onclick="resetTotal()">초기화</span>
-                </div>
-                <div style="flex:1;">
-                    <div class="history-item"><span class="tag tag-SSS">SSS</span><span id="total-SSS" class="hist-val" style="color:var(--col-SSS);">0</span></div>
-                    <div class="history-item"><span class="tag tag-SS">SS</span><span id="total-SS" class="hist-val" style="color:var(--col-SS);">0</span></div>
-                    <div class="history-item"><span class="tag tag-S">S</span><span id="total-S" class="hist-val" style="color:var(--col-S);">0</span></div>
-                    <div class="history-item"><span class="tag tag-A">A</span><span id="total-A" class="hist-val">0</span></div>
-                    <div class="history-item"><span class="tag tag-B">B</span><span id="total-B" class="hist-val">0</span></div>
-                    <div class="history-item"><span class="tag tag-C">C</span><span id="total-C" class="hist-val" style="color:#aaa;">0</span></div>
-                </div>
-                <div style="background:#000; padding:10px; border-radius:6px; border:1px solid #333;">
-                    <div style="font-size:0.8rem; color:#888;">TOTAL OPENS</div>
-                    <div style="font-size:1.4rem; font-weight:bold; text-align:right;" id="total-open-count">0</div>
-                </div>
-            </div>
-        </div>
-    </div>
+<div id="board"></div>
 
 <script>
-    let myFV = 0, myTickets = 0, board = [], hintCount = 0, isAutoRunning = false;
-    let totalStats = { SSS:0, SS:0, S:0, A:0, B:0, C:0 }, totalOpens = 0;
 
-    // [보드 생성]
-    function initBoard() {
-        let rewards = [...Array(1).fill('SSS'), ...Array(2).fill('SS'), ...Array(3).fill('S'), ...Array(10).fill('A'), ...Array(12).fill('B'), ...Array(12).fill('C')];
-        let attempts = 0;
-        while(true) {
-            attempts++;
-            for (let i = rewards.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [rewards[i], rewards[j]] = [rewards[j], rewards[i]];
-            }
-            let valid = true;
-            for(let i=0; i<40; i++) {
-                if(rewards[i] === 'C') {
-                    if (rewards[(i-1+40)%40] === 'C' || rewards[(i+1)%40] === 'C') { valid = false; break; }
-                }
-            }
-            if(valid || attempts > 3000) break;
-        }
-        board = rewards.map(r => ({ reward: r, opened: false, hinted: false }));
-        let locked = new Set();
+//////////////////////////////////////////////////////
+// 기본 설정
+//////////////////////////////////////////////////////
 
-    function forceReward(pos, rewardType) {
-        const index = pos - 1;
+const TOTAL_CELLS = 40;
 
-        if (board[index].reward === rewardType) {
-            locked.add(index);
-            return;
-        }
+const rewardCounts = {
+    A: 15,
+    B: 10,
+    C: 14,
+    SS: 1
+};
 
-        let swapIndex = board.findIndex((s, i) =>
-            s.reward === rewardType &&
-            i !== index &&
-            !locked.has(i)
-        );
+//////////////////////////////////////////////////////
+// 고정 위치 정의
+//////////////////////////////////////////////////////
 
-        if (swapIndex !== -1) {
-            board[swapIndex].reward = board[index].reward;
-        }    
+const fixedMap = {
+    2: 'B',
+    7: 'B',
+    22: 'B',
+    24: 'B',
+    26: 'B',
 
-        board[index].reward = rewardType;
-        locked.add(index);
-    }
+    4: 'A',
+    6: 'A',
+    12: 'A',
+    14: 'A',
+    17: 'A',
+    18: 'A',
+    20: 'A',
+    36: 'A',
+    38: 'A',
 
-// A 고정
-    [4,6,12,14,17,18,20,36,38].forEach(n => forceReward(n, 'A'));
+    10: 'SS',
+    5: 'C'
+};
 
-// SS 고정
-    forceReward(10, 'SS');
+//////////////////////////////////////////////////////
+// 보드 배열
+//////////////////////////////////////////////////////
 
-// C 고정
-    forceReward(5, 'C');
-// ==================================
+let board = [];
 
-    hintCount = 0;
-    updateHintGauge();
+//////////////////////////////////////////////////////
+// 초기화
+//////////////////////////////////////////////////////
+
+function init() {
+    createEmptyBoard();
+    fillRandomRewards();
+    applyFixedRewards();
     renderBoard();
-    updateRemainCounts();
-    log("[SYSTEM] 보상판 재배치 완료.");
-        }
+}
 
+//////////////////////////////////////////////////////
+// 빈 보드 생성
+//////////////////////////////////////////////////////
 
-    // [렌더링]
-    function renderBoard() {
-        const grid = document.getElementById('grid');
-        grid.innerHTML = '';
-        board.forEach((slot, i) => {
-            const div = document.createElement('div');
-            // 등급별 클래스 적용 시 'opened' 반드시 포함
-            div.className = 'slot' + (slot.opened ? ' opened bg-' + slot.reward : (slot.hinted ? ' hinted' : ''));
-            
-            let html = slot.opened ? slot.reward : (i + 1);
-            if (!slot.opened) {
-                if (slot.hinted) html = `?<div class="hint-tag text-blue">A↑</div>`;
-                else {
-                    let prev = (i - 1 + 40) % 40, next = (i + 1) % 40;
-                    if ((board[prev].opened && board[prev].reward==='C') || (board[next].opened && board[next].reward==='C')) {
-                        html += `<div class="hint-tag text-green">B↑</div>`;
-                    }
-                }
-                div.onclick = () => openSlot(i);
-            }
-            div.innerHTML = html;
-            grid.appendChild(div);
+function createEmptyBoard() {
+    board = [];
+    for(let i=1;i<=TOTAL_CELLS;i++){
+        board.push({
+            pos:i,
+            reward:null
         });
     }
+}
 
-    function updateHintGauge() {
-        for(let i=1; i<=3; i++) document.getElementById(`seg-${i}`).className = 'gauge-segment' + (i <= hintCount ? ' active' : '');
-        document.getElementById('hint-status').innerText = `${hintCount} / 3`;
+//////////////////////////////////////////////////////
+// 랜덤 채우기
+//////////////////////////////////////////////////////
+
+function fillRandomRewards() {
+
+    let pool = [];
+
+    for(let key in rewardCounts){
+        for(let i=0;i<rewardCounts[key];i++){
+            pool.push(key);
+        }
     }
 
-    // [오픈 로직]
-    function openSlot(i) {
-        if(board[i].opened) return;
-        if(myTickets < 30) {
-            log("[ERROR] 이용권 부족.");
-            if(isAutoRunning) toggleAI();
-            return;
+    shuffle(pool);
+
+    for(let i=0;i<TOTAL_CELLS;i++){
+        board[i].reward = pool[i];
+    }
+}
+
+//////////////////////////////////////////////////////
+// 고정 적용 (절대 안 깨짐 방식)
+//////////////////////////////////////////////////////
+
+function applyFixedRewards() {
+
+    // 1. 고정 자리에 먼저 강제 삽입
+    for(let pos in fixedMap){
+
+        let index = pos - 1;
+        let type = fixedMap[pos];
+
+        // 이미 맞으면 패스
+        if(board[index].reward === type) continue;
+
+        // 해당 타입 다른 위치 찾기
+        let swapIndex = findSwappableIndex(type);
+
+        if(swapIndex !== -1){
+            board[swapIndex].reward = board[index].reward;
         }
 
-        myTickets -= 30; board[i].opened = true; const r = board[i].reward;
-        
-        // 통계 및 힌트
-        totalStats[r]++; totalOpens++; 
-        hintCount++;
-        let trigger = false;
-        if(hintCount >= 3) { hintCount = 0; trigger = true; }
-        
-        if(trigger) {
-            const t = board.map((s, idx) => idx).filter(idx => !board[idx].opened && ['SSS','SS','S','A'].includes(board[idx].reward));
-            if(t.length > 0) board[t[Math.floor(Math.random()*t.length)]].hinted = true;
+        board[index].reward = type;
+    }
+}
+
+//////////////////////////////////////////////////////
+// 고정 자리 제외하고 교환 가능 인덱스 찾기
+//////////////////////////////////////////////////////
+
+function findSwappableIndex(type){
+
+    for(let i=0;i<TOTAL_CELLS;i++){
+
+        let pos = i + 1;
+
+        // 고정 자리면 건너뜀
+        if(fixedMap[pos]) continue;
+
+        if(board[i].reward === type){
+            return i;
         }
-
-        // UI 갱신 (순서 중요)
-        updateDisplay(); 
-        updateTotalStats();
-        updateHintGauge();
-        renderBoard(); 
-        updateRemainCounts();
-
-        // 결과 처리
-        if(r === 'SSS') {
-            log(`★ JACKPOT! SSS 획득! ★`);
-            if(isAutoRunning) {
-                setTimeout(() => { 
-                    initBoard(); 
-                    if(isAutoRunning) setTimeout(runAILoop, 300); 
-                }, 800);
-            }
-            return 'SSS';
-        } 
-        
-        log(`${i+1}번 -> [${r}]`);
-        if(isAutoRunning) setTimeout(runAILoop, 150);
-        
-        return r;
     }
 
-    // [AI]
-    function toggleAI() {
-        isAutoRunning = !isAutoRunning;
-        const btn = document.getElementById('btn-ai');
-        btn.className = isAutoRunning ? 'btn-ai running' : 'btn-ai';
-        btn.innerHTML = isAutoRunning ? 'AI AUTO<br><span>[STOP]</span>' : 'AI AUTO<br><span>[OFF]</span>';
-        if(isAutoRunning) { log("[AI] 가동"); runAILoop(); }
-        else { log("[AI] 중지"); }
-    }
+    return -1;
+}
 
-    function runAILoop() {
-        if(!isAutoRunning || myTickets < 30) return;
-        
-        let target = -1;
-        // 1. 힌트 우선
-        for(let i=0; i<40; i++) if(board[i].hinted && !board[i].opened) { target = i; break; }
-        
-        // 2. C옆 우선 (순환)
-        if(target === -1) {
-            const cands = [];
-            for(let i=0; i<40; i++) {
-                if(!board[i].opened) {
-                    let p = (i-1+40)%40, n = (i+1)%40;
-                    if((board[p].opened && board[p].reward==='C') || (board[n].opened && board[n].reward==='C')) cands.push(i);
-                }
-            }
-            if(cands.length > 0) target = cands[Math.floor(Math.random()*cands.length)];
-        }
-        
-        // 3. 랜덤
-        if(target === -1) {
-            const un = [];
-            for(let i=0; i<40; i++) if(!board[i].opened) un.push(i);
-            if(un.length > 0) target = un[Math.floor(Math.random()*un.length)];
-        }
+//////////////////////////////////////////////////////
+// 셔플 함수
+//////////////////////////////////////////////////////
 
-        if(target !== -1) openSlot(target);
+function shuffle(array) {
+    for(let i=array.length-1;i>0;i--){
+        let j = Math.floor(Math.random()*(i+1));
+        [array[i],array[j]]=[array[j],array[i]];
     }
+}
 
-    // [유틸]
-    function updateRemainCounts() {
-        const c = {SSS:0,SS:0,S:0,A:0,B:0,C:0};
-        board.forEach(s => { if(!s.opened) c[s.reward]++; });
-        for(let k in c) document.getElementById(`cnt-${k}`).innerText = c[k];
-    }
-    function updateTotalStats() {
-        for(let k in totalStats) document.getElementById(`total-${k}`).innerText = totalStats[k];
-        document.getElementById('total-open-count').innerText = totalOpens;
-    }
-    function chargeFV() { 
-        let v = parseInt(document.getElementById('fv-input').value); 
-        if(v > 0) { myFV += v; document.getElementById('fv-input').value = ''; updateDisplay(); } 
-    }
-    function buyTicket(n) { 
-        let c = n * 30; if(myFV >= c) { myFV -= c; myTickets += n; updateDisplay(); } 
-        else { log("[오류] FV 부족"); } 
-    }
-    function updateDisplay() { 
-        document.getElementById('fv-disp').innerText = myFV.toLocaleString(); 
-        document.getElementById('ticket-disp').innerText = myTickets.toLocaleString(); 
-    }
-    function log(m) { document.getElementById('log-text').innerText = m; }
-    function resetTotal() { 
-        if(confirm("기록 초기화?")) { totalStats={SSS:0,SS:0,S:0,A:0,B:0,C:0}; totalOpens=0; updateTotalStats(); } 
-    }
-    function resetBoard() { initBoard(); }
+//////////////////////////////////////////////////////
+// 화면 출력
+//////////////////////////////////////////////////////
 
-    initBoard();
+function renderBoard(){
+
+    const container = document.getElementById("board");
+    container.innerHTML = "";
+
+    board.forEach(cell => {
+
+        let div = document.createElement("div");
+        div.className = "cell " + cell.reward;
+        div.innerText = cell.reward + " (" + cell.pos + ")";
+
+        container.appendChild(div);
+    });
+}
+
+//////////////////////////////////////////////////////
+// 시작
+//////////////////////////////////////////////////////
+
+init();
+
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
