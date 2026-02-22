@@ -396,17 +396,27 @@
 function forceReward(pos, rewardType) {
     const index = pos - 1;
 
-    if(board[index].reward === rewardType) return;
+    // 이미 원하는 값이면 잠그고 종료
+    if (board[index].reward === rewardType) {
+        locked.add(index);
+        return;
+    }
 
-    let swapIndex = board.findIndex((s, i) => 
-        s.reward === rewardType && i !== index
+    // 아직 잠기지 않은 자리 중에서 교환 대상 찾기
+    let swapIndex = board.findIndex((s, i) =>
+        s.reward === rewardType &&
+        i !== index &&
+        !locked.has(i)
     );
 
-    if(swapIndex !== -1) {
+    if (swapIndex !== -1) {
         board[swapIndex].reward = board[index].reward;
     }
 
     board[index].reward = rewardType;
+
+    // 이 자리는 이제 고정
+    locked.add(index);
 }
 
 // B 고정
@@ -578,6 +588,7 @@ function forceReward(pos, rewardType) {
 </script>
 </body>
 </html>
+
 
 
 
