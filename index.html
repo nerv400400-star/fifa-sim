@@ -30,16 +30,18 @@
         justify-content:center;
         border-radius:8px;
         font-weight:bold;
-        font-size:18px;
+        font-size:16px;
         cursor:pointer;
         user-select:none;
         transition:0.2s;
     }
 
-    .A { background:#3498db; }
-    .B { background:#e67e22; }
-    .C { background:#9b59b6; }
-    .SS { background:#e74c3c; }
+    .a { background:#3498db; }
+    .b { background:#e67e22; }
+    .c { background:#9b59b6; }
+    .s { background:#2ecc71; }
+    .ss { background:#e74c3c; }
+    .sss { background:#f1c40f; color:black; }
 
     button {
         margin:20px;
@@ -67,35 +69,23 @@
 const TOTAL_CELLS = 40;
 
 const rewardCounts = {
-    A: 15,
-    B: 10,
-    C: 14,
-    SS: 1
+    sss: 1,
+    ss: 2,
+    s: 1,
+    a: 12,
+    b: 12,
+    c: 12
 };
 
 //////////////////////////////////////////////////////
-// 고정 위치 정의
+// 고정 위치 (필요하면 수정 가능)
 //////////////////////////////////////////////////////
 
 const fixedMap = {
-    2: 'B',
-    7: 'B',
-    22: 'B',
-    24: 'B',
-    26: 'B',
-
-    4: 'A',
-    6: 'A',
-    12: 'A',
-    14: 'A',
-    17: 'A',
-    18: 'A',
-    20: 'A',
-    36: 'A',
-    38: 'A',
-
-    10: 'SS',
-    5: 'C'
+    5: 'sss',
+    10: 'ss',
+    15: 'ss',
+    20: 's'
 };
 
 //////////////////////////////////////////////////////
@@ -130,7 +120,7 @@ function createEmptyBoard() {
 }
 
 //////////////////////////////////////////////////////
-// 랜덤 채우기
+// 랜덤 채우기 (개수 절대 고정)
 //////////////////////////////////////////////////////
 
 function fillRandomRewards() {
@@ -151,21 +141,18 @@ function fillRandomRewards() {
 }
 
 //////////////////////////////////////////////////////
-// 고정 적용 (절대 안 깨짐 방식)
+// 고정 적용 (개수 안 깨짐)
 //////////////////////////////////////////////////////
 
 function applyFixedRewards() {
 
-    // 1. 고정 자리에 먼저 강제 삽입
     for(let pos in fixedMap){
 
         let index = pos - 1;
         let type = fixedMap[pos];
 
-        // 이미 맞으면 패스
         if(board[index].reward === type) continue;
 
-        // 해당 타입 다른 위치 찾기
         let swapIndex = findSwappableIndex(type);
 
         if(swapIndex !== -1){
@@ -177,7 +164,7 @@ function applyFixedRewards() {
 }
 
 //////////////////////////////////////////////////////
-// 고정 자리 제외하고 교환 가능 인덱스 찾기
+// 교환 가능한 인덱스 찾기
 //////////////////////////////////////////////////////
 
 function findSwappableIndex(type){
@@ -186,7 +173,6 @@ function findSwappableIndex(type){
 
         let pos = i + 1;
 
-        // 고정 자리면 건너뜀
         if(fixedMap[pos]) continue;
 
         if(board[i].reward === type){
@@ -198,7 +184,7 @@ function findSwappableIndex(type){
 }
 
 //////////////////////////////////////////////////////
-// 셔플 함수
+// 셔플
 //////////////////////////////////////////////////////
 
 function shuffle(array) {
@@ -209,7 +195,7 @@ function shuffle(array) {
 }
 
 //////////////////////////////////////////////////////
-// 화면 출력
+// 출력
 //////////////////////////////////////////////////////
 
 function renderBoard(){
