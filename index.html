@@ -2,54 +2,52 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>Reward Probability Simulator</title>
+<title>Reward Probability Simulator (C 인접 금지)</title>
 <style>
-    body{
-        background:#111;
-        color:white;
-        font-family:Arial;
-        text-align:center;
-    }
-
-    #board{
-        width:900px;
-        margin:20px auto;
-        display:grid;
-        grid-template-columns:repeat(8,1fr);
-        gap:4px;
-        font-size:11px;
-    }
-
-    .cell{
-        padding:4px;
-        border-radius:6px;
-        background:#222;
-        white-space:pre-line;
-    }
-
-    button{
-        margin:20px;
-        padding:10px 20px;
-        font-size:16px;
-        border:none;
-        border-radius:6px;
-        cursor:pointer;
-    }
+body{
+    background:#111;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+}
+#board{
+    width:900px;
+    margin:20px auto;
+    display:grid;
+    grid-template-columns:repeat(8,1fr);
+    gap:4px;
+    font-size:11px;
+}
+.cell{
+    padding:4px;
+    border-radius:6px;
+    background:#222;
+    white-space:pre-line;
+}
+button{
+    margin:20px;
+    padding:10px 20px;
+    font-size:16px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
 </style>
 </head>
 <body>
 
-<h1>Reward 확률 시뮬레이터</h1>
-<button onclick="runSimulation()">500회 실행</button>
+<h1>Reward 확률 시뮬레이터 (C 인접 금지)</h1>
+<button onclick="runSimulation()">10,000회 실행</button>
 
 <div id="board"></div>
 
 <script>
 
 const TOTAL_CELLS = 40;
-const SIMULATION_COUNT = 500;
+const COLS = 8;
+const ROWS = 5;
+const SIMULATION_COUNT = 10000;
 
-// 보상 개수
 const rewardCounts = {
     sss: 1,
     ss: 2,
@@ -59,7 +57,6 @@ const rewardCounts = {
     C: 12
 };
 
-// 고정 위치
 const fixedMap = {
     2:'B',7:'B',22:'B',24:'B',26:'B',
     4:'A',6:'A',12:'A',14:'A',17:'A',18:'A',20:'A',36:'A',38:'A',
@@ -67,39 +64,73 @@ const fixedMap = {
     5:'C'
 };
 
-// 확률 저장용
 let stats = [];
 
 function createBoard(){
 
-    let board = new Array(TOTAL_CELLS).fill(null);
-    let countsLeft = {...rewardCounts};
+    while(true){ // 조건 만족할 때까지 반복
 
-    // 고정 먼저
-    for(let pos in fixedMap){
-        let type = fixedMap[pos];
-        board[pos-1] = type;
-        countsLeft[type]--;
-    }
+        let board = new Array(TOTAL_CELLS).fill(null);
+        let countsLeft = {...rewardCounts};
 
-    // 남은 풀
-    let pool = [];
-    for(let key in countsLeft){
-        for(let i=0;i<countsLeft[key];i++){
-            pool.push(key);
+        // 고정 먼저
+        for(let pos in fixedMap){
+            let type = fixedMap[pos];
+            board[pos-1] = type;
+            countsLeft[type]--;
+        }
+
+        // 풀 만들기
+        let pool = [];
+        for(let key in countsLeft){
+            for(let i=0;i<countsLeft[key];i++){
+                pool.push(key);
+            }
+        }
+
+        shuffle(pool);
+
+        let idx=0;
+        for(let i=0;i<TOTAL_CELLS;i++){
+            if(board[i]===null){
+                board[i]=pool[idx++];
+            }
+        }
+
+        // C 인접 검사
+        if(!hasAdjacentC(board)){
+            return board;
         }
     }
+}
 
-    shuffle(pool);
+function hasAdjacentC(board){
 
-    let idx=0;
     for(let i=0;i<TOTAL_CELLS;i++){
-        if(board[i]===null){
-            board[i]=pool[idx++];
+
+        if(board[i]!=='C') continue;
+
+        let row = Math.floor(i/COLS);
+        let col = i % COLS;
+
+        let neighbors = [
+            [row, col-1],
+            [row, col+1],
+            [row-1, col],
+            [row+1, col]
+        ];
+
+        for(let [r,c] of neighbors){
+            if(r>=0 && r<ROWS && c>=0 && c<COLS){
+                let index = r*COLS + c;
+                if(board[index]==='C'){
+                    return true;
+                }
+            }
         }
     }
 
-    return board;
+    return false;
 }
 
 function shuffle(arr){
@@ -111,7 +142,6 @@ function shuffle(arr){
 
 function runSimulation(){
 
-    // 초기화
     stats = [];
     for(let i=0;i<TOTAL_CELLS;i++){
         stats.push({
@@ -120,7 +150,6 @@ function runSimulation(){
         });
     }
 
-    // 반복
     for(let i=0;i<SIMULATION_COUNT;i++){
         let board = createBoard();
         for(let j=0;j<TOTAL_CELLS;j++){
@@ -158,4 +187,3 @@ function renderResults(){
 </script>
 </body>
 </html>
-
