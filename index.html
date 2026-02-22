@@ -2,46 +2,32 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>Reward Board Final Stable</title>
+<title>Reward Probability Simulator</title>
 <style>
-    body {
+    body{
         background:#111;
         color:white;
-        font-family:Arial, Helvetica, sans-serif;
+        font-family:Arial;
         text-align:center;
     }
 
-    h1 {
-        margin-top:20px;
-    }
-
-    #board {
-        width:600px;
-        margin:30px auto;
+    #board{
+        width:900px;
+        margin:20px auto;
         display:grid;
         grid-template-columns:repeat(8,1fr);
-        gap:8px;
+        gap:4px;
+        font-size:11px;
     }
 
-    .cell {
-        height:60px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        border-radius:8px;
-        font-weight:bold;
-        font-size:16px;
-        user-select:none;
+    .cell{
+        padding:4px;
+        border-radius:6px;
+        background:#222;
+        white-space:pre-line;
     }
 
-    .A { background:#3498db; }
-    .B { background:#e67e22; }
-    .C { background:#9b59b6; }
-    .s { background:#2ecc71; }
-    .ss { background:#e74c3c; }
-    .sss { background:#f1c40f; color:black; }
-
-    button {
+    button{
         margin:20px;
         padding:10px 20px;
         font-size:16px;
@@ -53,16 +39,17 @@
 </head>
 <body>
 
-<h1>Reward Board (완전 고정 + 개수 유지)</h1>
-<button onclick="init()">리셋</button>
+<h1>Reward 확률 시뮬레이터</h1>
+<button onclick="runSimulation()">10,000회 실행</button>
 
 <div id="board"></div>
 
 <script>
 
 const TOTAL_CELLS = 40;
+const SIMULATION_COUNT = 10000;
 
-// 최종 개수
+// 보상 개수
 const rewardCounts = {
     sss: 1,
     ss: 2,
@@ -74,47 +61,28 @@ const rewardCounts = {
 
 // 고정 위치
 const fixedMap = {
-    2: 'B',
-    7: 'B',
-    22: 'B',
-    24: 'B',
-    26: 'B',
-
-    4: 'A',
-    6: 'A',
-    12: 'A',
-    14: 'A',
-    17: 'A',
-    18: 'A',
-    20: 'A',
-    36: 'A',
-    38: 'A',
-
-    10: 'ss',
-    5: 'C'
+    2:'B',7:'B',22:'B',24:'B',26:'B',
+    4:'A',6:'A',12:'A',14:'A',17:'A',18:'A',20:'A',36:'A',38:'A',
+    10:'ss',
+    5:'C'
 };
 
-let board = [];
-
-function init(){
-    createBoard();
-    renderBoard();
-}
+// 확률 저장용
+let stats = [];
 
 function createBoard(){
 
-    board = new Array(TOTAL_CELLS).fill(null);
-
+    let board = new Array(TOTAL_CELLS).fill(null);
     let countsLeft = {...rewardCounts};
 
-    // 1️⃣ 고정 먼저 배치
+    // 고정 먼저
     for(let pos in fixedMap){
         let type = fixedMap[pos];
         board[pos-1] = type;
         countsLeft[type]--;
     }
 
-    // 2️⃣ 남은 보상 풀 만들기
+    // 남은 풀
     let pool = [];
     for(let key in countsLeft){
         for(let i=0;i<countsLeft[key];i++){
@@ -124,35 +92,68 @@ function createBoard(){
 
     shuffle(pool);
 
-    // 3️⃣ 빈 칸 채우기
-    let poolIndex = 0;
+    let idx=0;
     for(let i=0;i<TOTAL_CELLS;i++){
-        if(board[i] === null){
-            board[i] = pool[poolIndex++];
+        if(board[i]===null){
+            board[i]=pool[idx++];
         }
     }
+
+    return board;
 }
 
-function shuffle(array){
-    for(let i=array.length-1;i>0;i--){
+function shuffle(arr){
+    for(let i=arr.length-1;i>0;i--){
         let j=Math.floor(Math.random()*(i+1));
-        [array[i],array[j]]=[array[j],array[i]];
+        [arr[i],arr[j]]=[arr[j],arr[i]];
     }
 }
 
-function renderBoard(){
-    const container = document.getElementById("board");
-    container.innerHTML="";
+function runSimulation(){
 
-    board.forEach((reward,index)=>{
-        let div=document.createElement("div");
-        div.className="cell "+reward;
-        div.innerText=reward+" ("+(index+1)+")";
-        container.appendChild(div);
-    });
+    // 초기화
+    stats = [];
+    for(let i=0;i<TOTAL_CELLS;i++){
+        stats.push({
+            sss:0, ss:0, s:0,
+            A:0, B:0, C:0
+        });
+    }
+
+    // 반복
+    for(let i=0;i<SIMULATION_COUNT;i++){
+        let board = createBoard();
+        for(let j=0;j<TOTAL_CELLS;j++){
+            stats[j][board[j]]++;
+        }
+    }
+
+    renderResults();
 }
 
-init();
+function renderResults(){
+
+    const container=document.getElementById("board");
+    container.innerHTML="";
+
+    for(let i=0;i<TOTAL_CELLS;i++){
+
+        let div=document.createElement("div");
+        div.className="cell";
+
+        let text="칸 "+(i+1)+"\n";
+
+        for(let key in stats[i]){
+            let percent = (stats[i][key]/SIMULATION_COUNT*100).toFixed(1);
+            if(percent>0){
+                text+= key+" : "+percent+"%\n";
+            }
+        }
+
+        div.innerText=text;
+        container.appendChild(div);
+    }
+}
 
 </script>
 </body>
