@@ -3,99 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Style Human Body</title>
+    <title>Anatomy Body Site</title>
     <style>
-        :root {
-            --bg-color: #0d1117;
-            --card-bg: #161b22;
-            --border-color: #30363d;
-            --text-main: #c9d1d9;
-            --grass-level-4: #39d353;
-            --grass-level-0: #161b22;
+        /* 기본 스타일 초기화 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            /* 배경색을 흰색으로 설정 */
+            background-color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
 
-        .container {
-            width: 90%;
-            max-width: 1000px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 24px;
-            text-align: center;
+        .main-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
         }
 
-        h2 { font-size: 16px; font-weight: 400; margin-bottom: 20px; text-align: left; }
-
-        /* 중앙 인체 영역 */
-        .body-canvas {
-            height: 400px;
-            margin: 40px 0;
-            fill: var(--grass-level-0);
-            stroke: var(--grass-level-4);
-            stroke-width: 2;
+        .body-image-container {
+            /* 신체 이미지가 가운데 오도록 컨테이너 크기 조정 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 80%; /* 화면 너비의 최대 80% */
+            max-height: 80vh; /* 화면 높이의 최대 80% */
         }
 
-        /* 하단 깃허브 잔디 스타일 그리드 */
-        .contribution-graph {
-            display: grid;
-            grid-template-columns: repeat(53, 1fr);
-            gap: 3px;
-            margin-top: 20px;
+        .body-image {
+            /* 이미지 원본 비율 유지하면서 컨테이너 안에 꽉 차게 */
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            /* 테두리나 그림자가 필요하다면 여기에 추가 (예: box-shadow: 0 4px 8px rgba(0,0,0,0.1);) */
         }
-
-        .sq {
-            width: 12px;
-            height: 12px;
-            background-color: #21262d;
-            border-radius: 2px;
-        }
-
-        .sq.active { background-color: var(--grass-level-4); }
-
-        /* 호버 효과 */
-        .sq:hover { border: 1px solid #8b949e; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Human Body Contributions</h2>
-    
-    <div class="body-canvas">
-        <svg viewBox="0 0 200 500" height="100%">
-            <circle cx="100" cy="50" r="30" />
-            <path d="M70 85 L130 85 L140 250 L60 250 Z" />
-            <line x1="70" y1="100" x2="30" y2="200" />
-            <line x1="130" y1="100" x2="170" y2="200" />
-            <line x1="80" y1="250" x2="70" y2="450" />
-            <line x1="120" y1="250" x2="130" y2="450" />
-        </svg>
+    <div class="main-container">
+        <div class="body-image-container">
+            <img src="image_0.png" alt="Anatomy Body Model" class="body-image">
+        </div>
     </div>
-
-    <div class="contribution-graph" id="graph"></div>
-</div>
-
-<script>
-    // 깃허브 잔디 랜덤 생성기
-    const graph = document.getElementById('graph');
-    for (let i = 0; i < 371; i++) {
-        const square = document.createElement('div');
-        square.className = 'sq';
-        if (Math.random() > 0.8) square.classList.add('active');
-        graph.appendChild(square);
-    }
-</script>
 
 </body>
 </html>
